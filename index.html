@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>每日新闻聚合</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: #f5f6f8; color: #1a1a2e; padding: 24px;
+  }
+  .container { max-width: 900px; margin: 0 auto; }
+  .header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px; flex-wrap: wrap; gap: 12px;
+  }
+  .header h1 { font-size: 22px; font-weight: 700; }
+  .header .meta { font-size: 13px; color: #888; }
+  .btn-refresh {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 10px 20px; border: none; border-radius: 8px;
+    background: #2563eb; color: #fff; font-size: 14px;
+    font-weight: 600; cursor: pointer;
+  }
+  .btn-refresh:hover { background: #1d4ed8; }
+  .btn-refresh:disabled { background: #93b4f5; cursor: not-allowed; }
+  .article-card {
+    background: #fff; border-radius: 10px; padding: 16px 20px;
+    margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  }
+  .article-title {
+    font-size: 15px; font-weight: 600; line-height: 1.5;
+    color: #1a1a2e; text-decoration: none; display: block;
+  }
+  .article-title:hover { color: #2563eb; }
+  .article-meta {
+    display: flex; gap: 12px; margin-top: 8px;
+    font-size: 12px; color: #888; flex-wrap: wrap;
+  }
+  .article-meta .tag {
+    background: #f0f1f3; padding: 2px 8px; border-radius: 4px;
+  }
+  .article-summary {
+    font-size: 13px; color: #555; margin-top: 6px;
+    line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .empty { text-align: center; padding: 60px 0; color: #aaa; font-size: 14px; }
+  .toast {
+    position: fixed; top: 20px; right: 20px; padding: 10px 18px;
+    border-radius: 8px; font-size: 13px; color: #fff;
+    background: #16a34a; opacity: 0; transition: opacity .3s; z-index: 999;
+  }
+  .toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div>
+      <h1>📰 每日新闻聚合</h1>
+      <div class="meta" id="lastUpdated">加载中...</div>
+    </div>
+    <button class="btn-refresh" id="btnRefresh" onclick="loadNews(true)">🔄 刷新</button>
+  </div>
+  <div id="articleList"><div class="empty">正在加载新闻...</div></div>
+</div>
+<div class="toast" id="toast">已拉取最新数据</div>
+
+<script>
+async function loadNews(manual = false) {
+  const btn = document.getElementById('btnRefresh');
+  const list = document.getElementById('articleList');
+  if (manual) { btn.disabled = true; btn.textContent = '刷新中...'; }
+  try {
+    const res = await fetch(`./data/news.json?t=${Date.now()}`);
+    const data = await res.json();
+    render(data);
+    if (manual) showToast();
+  } catch (e) {
+    list.innerHTML = '<div class="empty">暂无数据，请等待 Actions 生成或手动触发</div>';
+  } finally {
+    if (manual) { btn.disabled = false; btn.textContent = '🔄 刷新'; }
+  }
+}
+
+function render(data) {
+  document.getElementById('lastUpdated').textContent =
+    `最后更新：${data.last_updated} | 原始 ${data.total_raw} 条，去重后 ${data.total_after_dedup} 条`;
+  const list = document.getElementById('articleList');
+  if (!data.articles || data.articles.length === 0) {
+    list.innerHTML = '<div class="empty">暂无新闻</div>';
+    return;
+  }
+  list.innerHTML = data.articles.map(a => `
+    <div class="article-card">
+      <a class="article-title" href="${escapeHtml(a.link)}" target="_blank" rel="noopener">${escapeHtml(a.title)}</a>
+      <div class="article-meta">
+        <span class="tag">${escapeHtml(a.source)}</span>
+        <span>${escapeHtml(a.category)}</span>
+        <span>${escapeHtml(a.published || '')}</span>
+      </div>
+      ${a.summary ? `<div class="article-summary">${escapeHtml(a.summary)}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function showToast() {
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+loadNews(false);
+</script>
+</body>
+</html>
