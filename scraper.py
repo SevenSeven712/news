@@ -23,6 +23,13 @@ HEADERS = {
 MAX_CONTENT_LEN = 5000
 MAX_IMAGES = 5
 
+# 封面图黑名单关键词（URL 里含这些词的图不要）
+BAD_COVER_PATTERNS = [
+    'qr', 'qrcode', 'ewm', 'erweima',
+    'logo', 'icon', 'avatar', 'default',
+    '/newspic/', 'wx_', 'weixin',
+]
+
 
 def article_id(url: str, title: str) -> str:
     return hashlib.md5((url or title).encode("utf-8")).hexdigest()[:10]
@@ -32,22 +39,38 @@ def is_image_url(url: str) -> bool:
     return bool(re.search(r'\.(jpg|jpeg|png|gif|webp|bmp)(\?|$)', url or '', re.I))
 
 
+def is_bad_cover(url: str) -> bool:
+    """判断图片 URL 是否应该被排除（二维码、logo、图标等）"""
+    if not url:
+        return True
+    low = url.lower()
+    return any(p in low for p in BAD_COVER_PATTERNS)
+
+
 def extract_cover(entry, summary_html: str = "") -> str:
+    """从 RSS entry 里提取封面图 URL，过滤掉二维码、logo 等"""
+    # media:content
     for m in entry.get("media_content") or []:
         u = m.get("url", "")
-        if u and (is_image_url(u) or m.get("medium") == "image"):
+        if u and (is_image_url(u) or m.get("medium") == "image") and not is_bad_cover(u):
             return u
+    # media:thumbnail
     for m in entry.get("media_thumbnail") or []:
         u = m.get("url", "")
-        if u:
+        if u and not is_bad_cover(u):
             return u
+    # enclosures
     for e in entry.get("enclosures") or []:
         if "image" in (e.get("type") or ""):
-            return e.get("href") or e.get("url") or ""
+            u = e.get("href") or e.get("url") or ""
+            if u and not is_bad_cover(u):
+                return u
+    # summary 里的 <img>，可能有多张，跳过黑名单
     if summary_html:
-        m = re.search(r'<img[^>]+src=["\']([^"\']+)["\']', summary_html)
-        if m:
-            return m.group(1)
+        for m in re.finditer(r'<img[^>]+src=["\']([^"\']+)["\']', summary_html):
+            u = m.group(1)
+            if not is_bad_cover(u):
+                return u
     return ""
 
 
@@ -135,6 +158,7 @@ def fetch_all() -> list:
 
 
 def fetch_content_and_images(url: str):
+    """返回 (纯文本正文, 正文里的图片 URL 列表)"""
     if not url:
         return "", []
     try:
@@ -162,6 +186,8 @@ def fetch_content_and_images(url: str):
         for img in container.find_all("img"):
             src = img.get("src") or img.get("data-src") or img.get("data-original") or ""
             if not src.startswith("http"):
+                continue
+            if is_bad_cover(src):
                 continue
             w = img.get("width")
             if w and str(w).isdigit() and int(w) < 200:
