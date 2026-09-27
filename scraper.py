@@ -23,7 +23,10 @@ HEADERS = {
 MAX_CONTENT_LEN = 5000
 MAX_IMAGES = 5
 
-# 封面图黑名单关键词（URL 里含这些词的图不要）
+# 这些源不抓封面图（它们 RSS 里的图是二维码/logo 之类的垃圾）
+NO_COVER_SOURCES = {'中国新闻网'}
+
+# 通用封面图黑名单关键词
 BAD_COVER_PATTERNS = [
     'qr', 'qrcode', 'ewm', 'erweima',
     'logo', 'icon', 'avatar', 'default',
@@ -40,7 +43,6 @@ def is_image_url(url: str) -> bool:
 
 
 def is_bad_cover(url: str) -> bool:
-    """判断图片 URL 是否应该被排除（二维码、logo、图标等）"""
     if not url:
         return True
     low = url.lower()
@@ -48,24 +50,19 @@ def is_bad_cover(url: str) -> bool:
 
 
 def extract_cover(entry, summary_html: str = "") -> str:
-    """从 RSS entry 里提取封面图 URL，过滤掉二维码、logo 等"""
-    # media:content
     for m in entry.get("media_content") or []:
         u = m.get("url", "")
         if u and (is_image_url(u) or m.get("medium") == "image") and not is_bad_cover(u):
             return u
-    # media:thumbnail
     for m in entry.get("media_thumbnail") or []:
         u = m.get("url", "")
         if u and not is_bad_cover(u):
             return u
-    # enclosures
     for e in entry.get("enclosures") or []:
         if "image" in (e.get("type") or ""):
             u = e.get("href") or e.get("url") or ""
             if u and not is_bad_cover(u):
                 return u
-    # summary 里的 <img>，可能有多张，跳过黑名单
     if summary_html:
         for m in re.finditer(r'<img[^>]+src=["\']([^"\']+)["\']', summary_html):
             u = m.group(1)
@@ -76,6 +73,7 @@ def extract_cover(entry, summary_html: str = "") -> str:
 
 def fetch_rss_source(source: dict) -> list:
     articles = []
+    no_cover = source["name"] in NO_COVER_SOURCES
     try:
         feed = feedparser.parse(source["url"], request_headers=HEADERS)
         for entry in feed.entries[: source.get("max_items", 15)]:
@@ -91,7 +89,7 @@ def fetch_rss_source(source: dict) -> list:
 
             summary_raw = entry.get("summary", "") or entry.get("description", "")
             summary = BeautifulSoup(summary_raw, "html.parser").get_text()[:200].strip()
-            cover = extract_cover(entry, summary_raw)
+            cover = "" if no_cover else extract_cover(entry, summary_raw)
 
             articles.append({
                 "id": article_id(link, title),
@@ -157,8 +155,7 @@ def fetch_all() -> list:
     return all_articles
 
 
-def fetch_content_and_images(url: str):
-    """返回 (纯文本正文, 正文里的图片 URL 列表)"""
+def fetch_content_and_images(url: str, skip_images: bool = False):
     if not url:
         return "", []
     try:
@@ -172,6 +169,9 @@ def fetch_content_and_images(url: str):
             include_tables=False,
             favor_precision=True,
         ) or ""
+
+        if skip_images:
+            return text[:MAX_CONTENT_LEN], []
 
         images = []
         soup = BeautifulSoup(html, "html.parser")
@@ -213,9 +213,10 @@ def main():
     contents = {}
 
     def worker(art):
-        text, imgs = fetch_content_and_images(art.get("link", ""))
+        skip = art.get("source") in NO_COVER_SOURCES
+        text, imgs = fetch_content_and_images(art.get("link", ""), skip_images=skip)
         contents[art["id"]] = {"content": text, "images": imgs}
-        if not art.get("cover") and imgs:
+        if not art.get("cover") and imgs and not skip:
             art["cover"] = imgs[0]
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=8) as ex:

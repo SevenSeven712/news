@@ -176,7 +176,6 @@
   .detail-content .inline-img {
     width: 100%; border-radius: 10px; margin: 16px 0; background: #f0f1f3;
   }
-  .detail-content .loading-text { color: #999; font-size: 14px; text-align: center; padding: 40px 0; }
   .origin-link {
     display: inline-block; margin-top: 28px; padding: 12px 22px;
     background: linear-gradient(135deg, #2563eb, #4f46e5);
@@ -210,18 +209,31 @@
     box-shadow: 0 3px 10px rgba(37,99,235,.3);
   }
 
-  .skeleton {
-    background: #fff; border-radius: 12px; padding: 18px 22px;
-    margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.05);
-  }
+  /* ============ 骨架屏（列表 + 详情通用） ============ */
   .sk-line {
     height: 12px; border-radius: 6px; margin-bottom: 10px;
     background: linear-gradient(90deg, #f0f1f3 25%, #e5e7eb 50%, #f0f1f3 75%);
-    background-size: 200% 100%; animation: shimmer 1.4s infinite;
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite;
   }
   .sk-line.w40 { width: 40%; height: 20px; }
   .sk-line.w60 { width: 60%; }
   .sk-line.w90 { width: 90%; }
+
+  .skeleton {
+    background: #fff; border-radius: 12px; padding: 18px 22px;
+    margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.05);
+  }
+
+  /* 详情页骨架屏 */
+  .detail-skeleton { padding: 8px 0; }
+  .detail-skeleton .sk-line {
+    height: 14px; border-radius: 7px; margin-bottom: 14px;
+  }
+  .detail-skeleton .sk-line.w100 { width: 100%; }
+  .detail-skeleton .sk-line.w95  { width: 95%; }
+  .detail-skeleton .sk-line.w88  { width: 88%; }
+  .detail-skeleton .sk-line.w75  { width: 75%; }
 
   @keyframes fadeSlideDown {
     from { opacity: 0; transform: translateY(-10px); }
@@ -253,7 +265,6 @@
 <body>
 <div class="container">
 
-  <!-- ========== 主页（静态框架，永远是完整可见的） ========== -->
   <div id="homePage">
     <div class="banner">
       <span class="emoji">🚀</span>
@@ -280,10 +291,7 @@
     </div>
   </div>
 
-  <!-- ========== 来源页（动态生成） ========== -->
   <div id="sourcePage" style="display:none"></div>
-
-  <!-- ========== 详情页（动态生成） ========== -->
   <div id="articlePage" style="display:none"></div>
 
 </div>
@@ -297,7 +305,6 @@ let currentDateFilter = 'today';
 let contentsCache = null;
 let contentsPromise = null;
 
-// ===== 启动：立刻加载数据 =====
 loadNews();
 
 async function loadNews(manual = false) {
@@ -342,7 +349,6 @@ async function loadNews(manual = false) {
   }
 }
 
-// ===== 填充主页数据（HTML 框架已存在，只更新内容） =====
 function fillHomeUI() {
   const metaEl = document.getElementById('lastUpdated');
   if (metaEl) {
@@ -421,7 +427,6 @@ function renderArticles(list, showSourceTag) {
   `).join('');
 }
 
-// ===== 路由 =====
 function route() {
   const hash = decodeURIComponent(location.hash.slice(1));
   const home = document.getElementById('homePage');
@@ -449,7 +454,6 @@ function route() {
 }
 window.addEventListener('hashchange', route);
 
-// ===== 来源页 =====
 function renderSourcePage() {
   const el = document.getElementById('sourcePage');
   const sourceArticles = allArticles.filter(a => a.source === currentSource);
@@ -485,7 +489,6 @@ function setDateFilter(f) {
   renderSourcePage();
 }
 
-// ===== 详情页 =====
 async function showArticle(id) {
   const el = document.getElementById('articlePage');
   const art = allArticles.find(a => a.id === id);
@@ -509,7 +512,17 @@ async function showArticle(id) {
       </div>
       ${art.cover ? `<img class="detail-cover" src="${escapeHtml(art.cover)}" referrerpolicy="no-referrer" loading="eager" onerror="this.style.display='none'">` : ''}
       <div class="detail-content" id="detailContent">
-        <div class="loading-text">正在加载正文...</div>
+        <div class="detail-skeleton">
+          <div class="sk-line w40"></div>
+          <div class="sk-line w100"></div>
+          <div class="sk-line w95"></div>
+          <div class="sk-line w100"></div>
+          <div class="sk-line w88"></div>
+          <div class="sk-line w100"></div>
+          <div class="sk-line w75"></div>
+          <div class="sk-line w100"></div>
+          <div class="sk-line w60"></div>
+        </div>
       </div>
       <a class="origin-link" href="${escapeHtml(art.link || '#')}" target="_blank" rel="noopener">🌐 查看原文</a>
     </article>
@@ -540,7 +553,6 @@ async function showArticle(id) {
   c.innerHTML = html;
 }
 
-// ===== 正文懒加载 =====
 async function loadContents() {
   if (contentsCache) return contentsCache;
   try {
@@ -572,7 +584,6 @@ async function getContent(id) {
   } catch (e) { return null; }
 }
 
-// ===== 工具 =====
 function filterByDate(articles, mode) {
   if (mode === 'all') return articles;
   const now = new Date();
@@ -609,10 +620,8 @@ function escapeAttr(str) {
   return String(str).replace(/'/g, "\\'").replace(/"/g, '&quot;');
 }
 
-// 首次进入就渲染路由
 route();
 
-// ESC 返回首页
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && location.hash) location.hash = '';
 });
