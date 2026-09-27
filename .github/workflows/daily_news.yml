@@ -35,4 +35,4 @@ jobs:
           git add -A data/
           git commit -m "auto update news data: $(date +'%Y-%m-%d')" || exit 0
           git pull --rebase --autostash origin main || true
-          git push || true
+          git push || true         
