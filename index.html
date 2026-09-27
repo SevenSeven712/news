@@ -16,21 +16,16 @@
   }
   .container { max-width: 900px; margin: 0 auto; }
 
-  /* ============ 顶部标语横幅 ============ */
+  /* ============ 顶部标语 ============ */
   .banner {
     background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
-    color: #fff;
-    padding: 16px 24px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-    font-size: 14px;
-    line-height: 1.6;
+    color: #fff; padding: 16px 24px; border-radius: 12px;
+    margin-bottom: 20px; font-size: 14px; line-height: 1.6;
     box-shadow: 0 4px 20px rgba(37, 99, 235, .25);
     animation: fadeSlideDown .6s cubic-bezier(.22, 1, .36, 1) both;
     display: flex; align-items: center; gap: 12px;
   }
   .banner .emoji { font-size: 20px; flex-shrink: 0; }
-  .banner strong { font-weight: 700; }
 
   /* ============ 头部 ============ */
   .header {
@@ -52,7 +47,6 @@
   .btn-refresh:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(37, 99, 235, .35); }
   .btn-refresh:active { transform: translateY(0); }
   .btn-refresh:disabled { opacity: .6; cursor: not-allowed; transform: none; }
-
   .btn-refresh .spinner {
     width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.4);
     border-top-color: #fff; border-radius: 50%;
@@ -70,8 +64,7 @@
     padding: 7px 16px; border-radius: 20px; font-size: 13px;
     border: 1.5px solid #e5e7eb; background: #fff; color: #555;
     cursor: pointer; transition: all .25s cubic-bezier(.22, 1, .36, 1);
-    display: inline-flex; align-items: center; gap: 6px;
-    font-weight: 500;
+    display: inline-flex; align-items: center; gap: 6px; font-weight: 500;
   }
   .cat-btn:hover {
     border-color: #2563eb; color: #2563eb;
@@ -99,8 +92,7 @@
                 box-shadow .25s cubic-bezier(.22, 1, .36, 1);
     animation: cardEnter .5s cubic-bezier(.22, 1, .36, 1) both;
     animation-delay: calc(var(--i, 0) * 0.025s);
-    position: relative;
-    overflow: hidden;
+    position: relative; overflow: hidden;
   }
   .article-card::before {
     content: ''; position: absolute; left: 0; top: 0; bottom: 0;
@@ -115,8 +107,8 @@
   .article-card:hover::before { transform: scaleY(1); }
 
   .article-title {
-    font-size: 15px; font-weight: 600; line-height: 1.55; color: #1a1a2e;
-    transition: color .2s;
+    font-size: 15px; font-weight: 600; line-height: 1.55;
+    color: #1a1a2e; transition: color .2s;
   }
   .article-card:hover .article-title { color: #2563eb; }
 
@@ -125,13 +117,19 @@
     font-size: 12px; flex-wrap: wrap; align-items: center;
   }
 
-  /* ✨ 来源标签 —— 蓝色实心底 */
+  /* 来源标签（可点击） */
   .src-tag {
     display: inline-flex; align-items: center; gap: 4px;
     padding: 3px 10px; border-radius: 6px;
     background: linear-gradient(135deg, #2563eb, #4f46e5);
     color: #fff; font-weight: 600; font-size: 12px;
     box-shadow: 0 2px 6px rgba(37, 99, 235, .25);
+    cursor: pointer; transition: all .2s;
+    text-decoration: none;
+  }
+  .src-tag:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, .4);
   }
   .src-tag::before {
     content: ''; width: 5px; height: 5px; border-radius: 50%;
@@ -139,7 +137,7 @@
     animation: pulse 2s ease-in-out infinite;
   }
 
-  /* ✨ 分类标签 —— 灰底描边，跟来源明显区分 */
+  /* 分类标签（不可点） */
   .cat-tag {
     display: inline-flex; align-items: center; gap: 4px;
     padding: 3px 10px; border-radius: 6px;
@@ -160,9 +158,7 @@
     -webkit-box-orient: vertical; overflow: hidden;
   }
 
-  .empty {
-    text-align: center; padding: 60px 0; color: #aaa; font-size: 14px;
-  }
+  .empty { text-align: center; padding: 60px 0; color: #aaa; font-size: 14px; }
 
   /* ============ 详情弹层 ============ */
   .modal-mask {
@@ -178,12 +174,11 @@
     background: #fff; border-radius: 16px;
     padding: 36px 44px;
     box-shadow: 0 20px 60px rgba(0,0,0,.25);
+    position: relative;
     transform: translateY(20px) scale(.97);
     animation: modalIn .35s cubic-bezier(.22, 1, .36, 1) forwards;
   }
-  @keyframes modalIn {
-    to { transform: translateY(0) scale(1); }
-  }
+  @keyframes modalIn { to { transform: translateY(0) scale(1); } }
   .modal h2 {
     font-size: 22px; font-weight: 700; line-height: 1.4;
     margin-bottom: 14px; padding-right: 40px;
@@ -216,7 +211,47 @@
     transition: background .2s, transform .2s;
   }
   .modal .close:hover { background: #e5e7eb; transform: rotate(90deg); }
-  .modal { position: relative; }
+
+  /* ============ 来源详情页 ============ */
+  .back-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px; margin-bottom: 20px;
+    background: #fff; border: 1.5px solid #e5e7eb;
+    border-radius: 10px; color: #2563eb; text-decoration: none;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: all .25s cubic-bezier(.22, 1, .36, 1);
+    animation: fadeSlideDown .5s cubic-bezier(.22, 1, .36, 1) both;
+  }
+  .back-btn:hover {
+    border-color: #2563eb; transform: translateX(-3px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, .15);
+  }
+
+  .source-header {
+    background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+    color: #fff; padding: 24px 28px; border-radius: 14px;
+    margin-bottom: 20px;
+    box-shadow: 0 6px 24px rgba(37, 99, 235, .3);
+    animation: fadeSlideDown .5s cubic-bezier(.22, 1, .36, 1) .05s both;
+  }
+  .source-header h1 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+  .source-header .meta { font-size: 13px; opacity: .9; }
+
+  .date-filters {
+    display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap;
+    animation: fadeSlideDown .5s cubic-bezier(.22, 1, .36, 1) .1s both;
+  }
+  .date-btn {
+    padding: 6px 14px; border-radius: 18px; font-size: 12px;
+    border: 1.5px solid #e5e7eb; background: #fff; color: #555;
+    cursor: pointer; font-weight: 500;
+    transition: all .22s cubic-bezier(.22, 1, .36, 1);
+  }
+  .date-btn:hover { border-color: #2563eb; color: #2563eb; }
+  .date-btn.active {
+    background: #2563eb; color: #fff; border-color: #2563eb;
+    box-shadow: 0 3px 10px rgba(37, 99, 235, .3);
+  }
 
   /* ============ 骨架屏 ============ */
   .skeleton {
@@ -229,11 +264,11 @@
     background-size: 200% 100%;
     animation: shimmer 1.4s infinite;
   }
+  .sk-line.w40 { width: 40%; height: 20px; }
   .sk-line.w60 { width: 60%; }
   .sk-line.w90 { width: 90%; }
-  .sk-line.w40 { width: 40%; height: 20px; }
 
-  /* ============ 动画关键帧 ============ */
+  /* ============ 动画 ============ */
   @keyframes fadeSlideDown {
     from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }
@@ -246,9 +281,7 @@
     0%, 100% { opacity: 1; }
     50% { opacity: .35; }
   }
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
+  @keyframes spin { to { transform: rotate(360deg); } }
   @keyframes shimmer {
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
@@ -260,35 +293,51 @@
     .modal { padding: 24px 20px !important; border-radius: 12px !important; }
     .modal h2 { font-size: 18px; }
     .banner { font-size: 13px; padding: 14px 16px; }
+    .source-header { padding: 18px 20px; }
+    .source-header h1 { font-size: 18px; }
   }
 </style>
 </head>
 <body>
 <div class="container">
 
-  <!-- 顶部标语横幅 -->
-  <div class="banner">
-    <span class="emoji">🚀</span>
-    <div>这是 <strong>Seven 戚</strong>的一个 <strong>Python</strong> 为主的爬取项目，网站每日不间断更新热点新闻</div>
-  </div>
-
-  <div class="header">
-    <div>
-      <h1>📰 每日新闻聚合</h1>
-      <div class="meta" id="lastUpdated">加载中...</div>
+  <!-- ============ 主页 ============ -->
+  <div id="homePage">
+    <div class="banner">
+      <span class="emoji">🚀</span>
+      <div>这是 <strong>Seven 戚</strong>的一个以 <strong>Python</strong> 为主的爬取项目，网站每日不间断更新热点新闻</div>
     </div>
-    <button class="btn-refresh" id="btnRefresh" onclick="loadNews(true)">
-      <span class="spinner"></span>
-      <span id="btnText">🔄 刷新</span>
-    </button>
+
+    <div class="header">
+      <div>
+        <h1>📰 每日新闻聚合</h1>
+        <div class="meta" id="lastUpdated">加载中...</div>
+      </div>
+      <button class="btn-refresh" id="btnRefresh" onclick="loadNews(true)">
+        <span class="spinner"></span>
+        <span id="btnText">🔄 刷新</span>
+      </button>
+    </div>
+
+    <div class="categories" id="categories"></div>
+    <div id="articleList">
+      <div class="skeleton"><div class="sk-line w40"></div><div class="sk-line w90"></div><div class="sk-line w60"></div></div>
+      <div class="skeleton"><div class="sk-line w40"></div><div class="sk-line w90"></div><div class="sk-line w60"></div></div>
+      <div class="skeleton"><div class="sk-line w40"></div><div class="sk-line w90"></div><div class="sk-line w60"></div></div>
+    </div>
   </div>
 
-  <div class="categories" id="categories"></div>
-  <div id="articleList">
-    <div class="skeleton"><div class="sk-line w40"></div><div class="sk-line w90"></div><div class="sk-line w60"></div></div>
-    <div class="skeleton"><div class="sk-line w40"></div><div class="sk-line w90"></div><div class="sk-line w60"></div></div>
-    <div class="skeleton"><div class="sk-line w40"></div><div class="sk-line w90"></div><div class="sk-line w60"></div></div>
+  <!-- ============ 来源详情页 ============ -->
+  <div id="sourcePage" style="display:none">
+    <a class="back-btn" href="#/">← 返回首页</a>
+    <div class="source-header">
+      <h1 id="sourceTitle"></h1>
+      <div class="meta" id="sourceMeta"></div>
+    </div>
+    <div class="date-filters" id="dateFilters"></div>
+    <div id="sourceList"></div>
   </div>
+
 </div>
 
 <!-- 详情弹层 -->
@@ -305,7 +354,10 @@
 <script>
 let allArticles = [];
 let currentCategory = '全部';
+let currentSource = '';
+let currentDateFilter = 'today'; // today | 3d | 7d | all
 
+// ============ 初始化 ============
 async function loadNews(manual = false) {
   const btn = document.getElementById('btnRefresh');
   const btnText = document.getElementById('btnText');
@@ -323,8 +375,7 @@ async function loadNews(manual = false) {
     allArticles = data.articles || [];
     document.getElementById('lastUpdated').textContent =
       `最后更新：${data.last_updated} | 原始 ${data.total_raw} 条，去重后 ${data.total_after_dedup} 条`;
-    renderCategories();
-    renderList();
+    route();
   } catch (e) {
     list.innerHTML = '<div class="empty">暂无数据，请等待 Actions 生成</div>';
   } finally {
@@ -336,13 +387,49 @@ async function loadNews(manual = false) {
   }
 }
 
+// ============ 路由 ============
+function route() {
+  const hash = decodeURIComponent(location.hash.slice(1));
+  if (hash.startsWith('/source/')) {
+    const src = hash.slice('/source/'.length);
+    showSourcePage(src);
+  } else {
+    showHomePage();
+  }
+}
+
+window.addEventListener('hashchange', route);
+
+function showHomePage() {
+  document.getElementById('homePage').style.display = 'block';
+  document.getElementById('sourcePage').style.display = 'none';
+  renderCategories();
+  renderList();
+}
+
+function showSourcePage(sourceName) {
+  document.getElementById('homePage').style.display = 'none';
+  document.getElementById('sourcePage').style.display = 'block';
+  currentSource = sourceName;
+  currentDateFilter = 'today';
+  renderSourcePage();
+  window.scrollTo(0, 0);
+}
+
+// ============ 主页渲染 ============
 function renderCategories() {
   const counts = {};
   allArticles.forEach(a => {
     const c = a.category || '综合';
     counts[c] = (counts[c] || 0) + 1;
   });
-  const cats = ['全部', ...Object.keys(counts).sort()];
+
+  // 固定顺序，让分类有条理
+  const order = ['科技', '技术', '财经', '社会', '热搜', '娱乐', '游戏', '阅读', '综合'];
+  const allCats = Object.keys(counts);
+  const cats = ['全部', ...order.filter(c => allCats.includes(c)),
+                ...allCats.filter(c => !order.includes(c)).sort()];
+
   const box = document.getElementById('categories');
   box.innerHTML = cats.map(c => {
     const count = c === '全部' ? allArticles.length : counts[c];
@@ -377,7 +464,8 @@ function renderList() {
       <div class="article-card" style="--i:${idx}" onclick="openModal(${globalIdx})">
         <div class="article-title">${escapeHtml(a.title)}</div>
         <div class="article-meta">
-          <span class="src-tag">${escapeHtml(a.source)}</span>
+          <a class="src-tag" href="#/source/${encodeURIComponent(a.source)}"
+             onclick="event.stopPropagation()">${escapeHtml(a.source)}</a>
           <span class="cat-tag">${escapeHtml(a.category)}</span>
           <span class="article-time">${escapeHtml(a.published || '')}</span>
         </div>
@@ -387,13 +475,109 @@ function renderList() {
   }).join('');
 }
 
+// ============ 来源详情页渲染 ============
+function renderSourcePage() {
+  const sourceArticles = allArticles.filter(a => a.source === currentSource);
+
+  document.getElementById('sourceTitle').textContent = `📡 ${currentSource}`;
+  document.getElementById('sourceMeta').textContent =
+    `共 ${sourceArticles.length} 条新闻 · 点击卡片查看全文`;
+
+  // 日期筛选
+  const filters = [
+    { key: 'today', label: '今天' },
+    { key: '3d', label: '近 3 天' },
+    { key: '7d', label: '近 7 天' },
+    { key: 'all', label: '全部' },
+  ];
+  document.getElementById('dateFilters').innerHTML = filters.map(f =>
+    `<button class="date-btn ${f.key === currentDateFilter ? 'active' : ''}"
+             onclick="setDateFilter('${f.key}')">${f.label}</button>`
+  ).join('');
+
+  // 过滤
+  const filtered = filterByDate(sourceArticles, currentDateFilter);
+  const list = document.getElementById('sourceList');
+
+  if (filtered.length === 0) {
+    list.innerHTML = `<div class="empty">该时间段内「${escapeHtml(currentSource)}」暂无新闻</div>`;
+    return;
+  }
+
+  list.innerHTML = filtered.map((a, idx) => {
+    const globalIdx = allArticles.indexOf(a);
+    return `
+      <div class="article-card" style="--i:${idx}" onclick="openModal(${globalIdx})">
+        <div class="article-title">${escapeHtml(a.title)}</div>
+        <div class="article-meta">
+          <span class="cat-tag">${escapeHtml(a.category)}</span>
+          <span class="article-time">${escapeHtml(a.published || '')}</span>
+        </div>
+        ${a.summary ? `<div class="article-summary">${escapeHtml(a.summary)}</div>` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+function setDateFilter(f) {
+  currentDateFilter = f;
+  renderSourcePage();
+}
+
+function filterByDate(articles, mode) {
+  if (mode === 'all') return articles;
+
+  const now = new Date();
+  const todayStr = formatDate(now);
+  const yestStr = formatDate(new Date(now.getTime() - 86400000));
+
+  if (mode === 'today') {
+    return articles.filter(a => (a.published || '').startsWith(todayStr));
+  }
+
+  if (mode === '3d') {
+    const cutoff = new Date(now.getTime() - 3 * 86400000);
+    return articles.filter(a => {
+      const d = parseDate(a.published);
+      return d && d >= cutoff;
+    });
+  }
+
+  if (mode === '7d') {
+    const cutoff = new Date(now.getTime() - 7 * 86400000);
+    return articles.filter(a => {
+      const d = parseDate(a.published);
+      return d && d >= cutoff;
+    });
+  }
+
+  return articles;
+}
+
+function formatDate(d) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+function parseDate(str) {
+  if (!str) return null;
+  // 支持 "YYYY-MM-DD HH:MM" 和 "YYYY-MM-DD"
+  const m = str.match(/(\d{4})-(\d{2})-(\d{2})(?:\s+(\d{2}):(\d{2}))?/);
+  if (!m) return null;
+  return new Date(+m[1], +m[2] - 1, +m[3], +(m[4] || 0), +(m[5] || 0));
+}
+
+// ============ 详情弹层 ============
 function openModal(idx) {
   const a = allArticles[idx];
   if (!a) return;
 
   document.getElementById('modalTitle').textContent = a.title;
   document.getElementById('modalMeta').innerHTML =
-    `<span class="src-tag">${escapeHtml(a.source)}</span>
+    `<a class="src-tag" href="#/source/${encodeURIComponent(a.source)}"
+        onclick="closeModal()">${escapeHtml(a.source)}</a>
      <span class="cat-tag">${escapeHtml(a.category)}</span>
      <span class="article-time">${escapeHtml(a.published || '')}</span>`;
 
@@ -412,7 +596,6 @@ function openModal(idx) {
   mask.classList.add('open');
   document.body.style.overflow = 'hidden';
 
-  // 重置动画
   const modal = mask.querySelector('.modal');
   modal.style.animation = 'none';
   modal.offsetHeight;
@@ -428,6 +611,7 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeModal();
 });
 
+// ============ 工具 ============
 function escapeHtml(str) {
   if (!str) return '';
   return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;')
@@ -438,6 +622,7 @@ function escapeAttr(str) {
   return String(str).replace(/'/g, "\\'").replace(/"/g, '&quot;');
 }
 
+// 启动
 loadNews(false);
 </script>
 </body>
