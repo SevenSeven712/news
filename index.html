@@ -45,7 +45,6 @@
     display: inline-flex; align-items: center; gap: 6px;
   }
   .btn-refresh:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(37, 99, 235, .35); }
-  .btn-refresh:active { transform: translateY(0); }
   .btn-refresh:disabled { opacity: .6; cursor: not-allowed; transform: none; }
   .btn-refresh .spinner {
     width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.4);
@@ -84,7 +83,7 @@
 
   /* ============ 新闻卡片 ============ */
   .article-card {
-    background: #fff; border-radius: 12px; padding: 18px 22px;
+    background: #fff; border-radius: 12px; padding: 16px 20px;
     margin-bottom: 12px;
     box-shadow: 0 1px 3px rgba(0,0,0,.05);
     cursor: pointer;
@@ -93,6 +92,7 @@
     animation: cardEnter .5s cubic-bezier(.22, 1, .36, 1) both;
     animation-delay: calc(var(--i, 0) * 0.025s);
     position: relative; overflow: hidden;
+    display: flex; gap: 16px; align-items: flex-start;
   }
   .article-card::before {
     content: ''; position: absolute; left: 0; top: 0; bottom: 0;
@@ -106,6 +106,14 @@
   }
   .article-card:hover::before { transform: scaleY(1); }
 
+  .article-thumb {
+    width: 100px; height: 72px; flex-shrink: 0;
+    border-radius: 8px; object-fit: cover;
+    background: #f0f1f3;
+  }
+
+  .article-body { flex: 1; min-width: 0; }
+
   .article-title {
     font-size: 15px; font-weight: 600; line-height: 1.55;
     color: #1a1a2e; transition: color .2s;
@@ -117,7 +125,6 @@
     font-size: 12px; flex-wrap: wrap; align-items: center;
   }
 
-  /* 来源标签（可点击） */
   .src-tag {
     display: inline-flex; align-items: center; gap: 4px;
     padding: 3px 10px; border-radius: 6px;
@@ -137,7 +144,6 @@
     animation: pulse 2s ease-in-out infinite;
   }
 
-  /* 分类标签（不可点） */
   .cat-tag {
     display: inline-flex; align-items: center; gap: 4px;
     padding: 3px 10px; border-radius: 6px;
@@ -160,65 +166,13 @@
 
   .empty { text-align: center; padding: 60px 0; color: #aaa; font-size: 14px; }
 
-  /* ============ 详情弹层 ============ */
-  .modal-mask {
-    display: none; position: fixed; inset: 0;
-    background: rgba(15, 23, 42, .55);
-    backdrop-filter: blur(4px);
-    z-index: 100; padding: 24px; overflow-y: auto;
-    opacity: 0; transition: opacity .25s ease;
-  }
-  .modal-mask.open { display: block; opacity: 1; }
-  .modal-mask .modal {
-    max-width: 720px; margin: 20px auto;
-    background: #fff; border-radius: 16px;
-    padding: 36px 44px;
-    box-shadow: 0 20px 60px rgba(0,0,0,.25);
-    position: relative;
-    transform: translateY(20px) scale(.97);
-    animation: modalIn .35s cubic-bezier(.22, 1, .36, 1) forwards;
-  }
-  @keyframes modalIn { to { transform: translateY(0) scale(1); } }
-  .modal h2 {
-    font-size: 22px; font-weight: 700; line-height: 1.4;
-    margin-bottom: 14px; padding-right: 40px;
-  }
-  .modal .meta {
-    font-size: 13px; color: #888; margin-bottom: 22px;
-    padding-bottom: 18px; border-bottom: 1px solid #eee;
-    display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
-  }
-  .modal .content {
-    font-size: 15px; line-height: 1.9; color: #333;
-    white-space: pre-wrap; word-wrap: break-word;
-  }
-  .modal .origin-link {
-    display: inline-block; margin-top: 28px; padding: 10px 20px;
-    background: linear-gradient(135deg, #2563eb, #4f46e5);
-    color: #fff; text-decoration: none;
-    border-radius: 10px; font-size: 13px; font-weight: 600;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, .25);
-    transition: transform .2s, box-shadow .2s;
-  }
-  .modal .origin-link:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(37, 99, 235, .35);
-  }
-  .modal .close {
-    position: absolute; top: 16px; right: 16px;
-    background: #f3f4f6; border: none; width: 36px; height: 36px;
-    border-radius: 50%; font-size: 18px; cursor: pointer; color: #555;
-    transition: background .2s, transform .2s;
-  }
-  .modal .close:hover { background: #e5e7eb; transform: rotate(90deg); }
-
-  /* ============ 来源详情页 ============ */
+  /* ============ 详情页 ============ */
   .back-btn {
     display: inline-flex; align-items: center; gap: 6px;
     padding: 8px 16px; margin-bottom: 20px;
     background: #fff; border: 1.5px solid #e5e7eb;
     border-radius: 10px; color: #2563eb; text-decoration: none;
-    font-size: 13px; font-weight: 600; cursor: pointer;
+    font-size: 13px; font-weight: 600;
     transition: all .25s cubic-bezier(.22, 1, .36, 1);
     animation: fadeSlideDown .5s cubic-bezier(.22, 1, .36, 1) both;
   }
@@ -227,6 +181,51 @@
     box-shadow: 0 4px 12px rgba(37, 99, 235, .15);
   }
 
+  .detail {
+    background: #fff; border-radius: 16px; padding: 36px 44px;
+    box-shadow: 0 4px 24px rgba(0,0,0,.06);
+    animation: fadeSlideDown .5s cubic-bezier(.22, 1, .36, 1) .05s both;
+  }
+  .detail h1 {
+    font-size: 26px; font-weight: 800; line-height: 1.4;
+    margin-bottom: 16px; letter-spacing: -.3px;
+  }
+  .detail .meta {
+    display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+    font-size: 13px; color: #888; margin-bottom: 24px;
+    padding-bottom: 20px; border-bottom: 1px solid #eee;
+  }
+  .detail-cover {
+    width: 100%; max-height: 400px; object-fit: cover;
+    border-radius: 12px; margin-bottom: 24px;
+    background: #f0f1f3;
+  }
+  .detail-content {
+    font-size: 16px; line-height: 1.9; color: #333;
+    word-wrap: break-word;
+  }
+  .detail-content p { margin-bottom: 16px; }
+  .detail-content .inline-img {
+    width: 100%; border-radius: 10px; margin: 16px 0;
+    background: #f0f1f3;
+  }
+  .detail-content .loading-text {
+    color: #999; font-size: 14px; text-align: center; padding: 40px 0;
+  }
+  .origin-link {
+    display: inline-block; margin-top: 28px; padding: 12px 22px;
+    background: linear-gradient(135deg, #2563eb, #4f46e5);
+    color: #fff; text-decoration: none;
+    border-radius: 10px; font-size: 14px; font-weight: 600;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, .25);
+    transition: transform .2s, box-shadow .2s;
+  }
+  .origin-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(37, 99, 235, .35);
+  }
+
+  /* ============ 来源页 ============ */
   .source-header {
     background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
     color: #fff; padding: 24px 28px; border-radius: 14px;
@@ -268,7 +267,6 @@
   .sk-line.w60 { width: 60%; }
   .sk-line.w90 { width: 90%; }
 
-  /* ============ 动画 ============ */
   @keyframes fadeSlideDown {
     from { opacity: 0; transform: translateY(-10px); }
     to { opacity: 1; transform: translateY(0); }
@@ -290,19 +288,92 @@
   @media (max-width: 640px) {
     body { padding: 16px 12px 40px; }
     .header h1 { font-size: 20px; }
-    .modal { padding: 24px 20px !important; border-radius: 12px !important; }
-    .modal h2 { font-size: 18px; }
     .banner { font-size: 13px; padding: 14px 16px; }
+    .detail { padding: 24px 20px; border-radius: 12px; }
+    .detail h1 { font-size: 20px; }
     .source-header { padding: 18px 20px; }
     .source-header h1 { font-size: 18px; }
+    .article-thumb { width: 80px; height: 60px; }
   }
 </style>
 </head>
 <body>
-<div class="container">
+<div class="container" id="app">
+  <div class="skeleton"><div class="sk-line w40"></div><div class="sk-line w90"></div><div class="sk-line w60"></div></div>
+  <div class="skeleton"><div class="sk-line w40"></div><div class="sk-line w90"></div><div class="sk-line w60"></div></div>
+  <div class="skeleton"><div class="sk-line w40"></div><div class="sk-line w90"></div><div class="sk-line w60"></div></div>
+</div>
 
-  <!-- ============ 主页 ============ -->
-  <div id="homePage">
+<script>
+// ============ 全局状态 ============
+let allArticles = [];
+let meta = { last_updated: '', total_raw: 0, total_after_dedup: 0 };
+let currentCategory = '全部';
+let currentSource = '';
+let currentDateFilter = 'today';
+
+// 正文缓存（内存 + localStorage）
+let contentsCache = null;
+let contentsPromise = null;
+
+// ============ 启动 ============
+loadNews();
+
+async function loadNews(manual = false) {
+  const btn = document.getElementById('btnRefresh');
+  const btnText = document.getElementById('btnText');
+  if (manual && btn) {
+    btn.disabled = true;
+    btn.classList.add('loading');
+    btnText.textContent = '刷新中...';
+  }
+
+  try {
+    // 加时间戳防缓存
+    const res = await fetch(`./data/news.json?t=${Date.now()}`);
+    const data = await res.json();
+    allArticles = data.articles || [];
+    meta = {
+      last_updated: data.last_updated,
+      total_raw: data.total_raw,
+      total_after_dedup: data.total_after_dedup,
+    };
+    // 数据变了，清掉旧的正文缓存
+    contentsCache = null;
+    try { localStorage.removeItem('news_contents'); } catch (e) {}
+  } catch (e) {
+    allArticles = [];
+  } finally {
+    if (manual && btn) {
+      btn.disabled = false;
+      btn.classList.remove('loading');
+      btnText.textContent = '🔄 刷新';
+    }
+    route();
+  }
+}
+
+// ============ 路由 ============
+function route() {
+  const hash = decodeURIComponent(location.hash.slice(1));
+  if (hash.startsWith('/article/')) {
+    showArticle(hash.slice(9));
+  } else if (hash.startsWith('/source/')) {
+    showSource(hash.slice(8));
+  } else {
+    showHome();
+  }
+}
+
+window.addEventListener('hashchange', route);
+
+// ============ 视图渲染 ============
+function showHome() {
+  const app = document.getElementById('app');
+
+  const categories = computeCategories();
+
+  app.innerHTML = `
     <div class="banner">
       <span class="emoji">🚀</span>
       <div>这是 <strong>Seven 戚</strong>的一个以 <strong>Python</strong> 为主的爬取项目，网站每日不间断更新热点新闻</div>
@@ -311,7 +382,7 @@
     <div class="header">
       <div>
         <h1>📰 每日新闻聚合</h1>
-        <div class="meta" id="lastUpdated">加载中...</div>
+        <div class="meta">最后更新：${escapeHtml(meta.last_updated || '未知')} | 原始 ${meta.total_raw} 条，去重后 ${meta.total_after_dedup} 条</div>
       </div>
       <button class="btn-refresh" id="btnRefresh" onclick="loadNews(true)">
         <span class="spinner"></span>
@@ -319,204 +390,54 @@
       </button>
     </div>
 
-    <div class="categories" id="categories"></div>
-    <div id="articleList">
-      <div class="skeleton"><div class="sk-line w40"></div><div class="sk-line w90"></div><div class="sk-line w60"></div></div>
-      <div class="skeleton"><div class="sk-line w40"></div><div class="sk-line w90"></div><div class="sk-line w60"></div></div>
-      <div class="skeleton"><div class="sk-line w40"></div><div class="sk-line w90"></div><div class="sk-line w60"></div></div>
+    <div class="categories">
+      ${categories.map(c => `
+        <button class="cat-btn ${c.name === currentCategory ? 'active' : ''}"
+                onclick="switchCategory('${escapeAttr(c.name)}')">
+          ${escapeHtml(c.name)}<span class="count">${c.count}</span>
+        </button>
+      `).join('')}
     </div>
-  </div>
 
-  <!-- ============ 来源详情页 ============ -->
-  <div id="sourcePage" style="display:none">
-    <a class="back-btn" href="#/">← 返回首页</a>
-    <div class="source-header">
-      <h1 id="sourceTitle"></h1>
-      <div class="meta" id="sourceMeta"></div>
-    </div>
-    <div class="date-filters" id="dateFilters"></div>
-    <div id="sourceList"></div>
-  </div>
-
-</div>
-
-<!-- 详情弹层 -->
-<div class="modal-mask" id="modalMask" onclick="if(event.target===this)closeModal()">
-  <div class="modal">
-    <button class="close" onclick="closeModal()">✕</button>
-    <h2 id="modalTitle"></h2>
-    <div class="meta" id="modalMeta"></div>
-    <div class="content" id="modalContent"></div>
-    <a id="modalOrigin" class="origin-link" target="_blank" rel="noopener">🌐 查看原文</a>
-  </div>
-</div>
-
-<script>
-let allArticles = [];
-let currentCategory = '全部';
-let currentSource = '';
-let currentDateFilter = 'today'; // today | 3d | 7d | all
-
-// ============ 初始化 ============
-async function loadNews(manual = false) {
-  const btn = document.getElementById('btnRefresh');
-  const btnText = document.getElementById('btnText');
-  const list = document.getElementById('articleList');
-
-  if (manual) {
-    btn.disabled = true;
-    btn.classList.add('loading');
-    btnText.textContent = '刷新中...';
-  }
-
-  try {
-    const res = await fetch(`./data/news.json?t=${Date.now()}`);
-    const data = await res.json();
-    allArticles = data.articles || [];
-    document.getElementById('lastUpdated').textContent =
-      `最后更新：${data.last_updated} | 原始 ${data.total_raw} 条，去重后 ${data.total_after_dedup} 条`;
-    route();
-  } catch (e) {
-    list.innerHTML = '<div class="empty">暂无数据，请等待 Actions 生成</div>';
-  } finally {
-    if (manual) {
-      btn.disabled = false;
-      btn.classList.remove('loading');
-      btnText.textContent = '🔄 刷新';
-    }
-  }
+    <div id="articleList">${renderArticleList()}</div>
+  `;
 }
 
-// ============ 路由 ============
-function route() {
-  const hash = decodeURIComponent(location.hash.slice(1));
-  if (hash.startsWith('/source/')) {
-    const src = hash.slice('/source/'.length);
-    showSourcePage(src);
-  } else {
-    showHomePage();
-  }
-}
-
-window.addEventListener('hashchange', route);
-
-function showHomePage() {
-  document.getElementById('homePage').style.display = 'block';
-  document.getElementById('sourcePage').style.display = 'none';
-  renderCategories();
-  renderList();
-}
-
-function showSourcePage(sourceName) {
-  document.getElementById('homePage').style.display = 'none';
-  document.getElementById('sourcePage').style.display = 'block';
+function showSource(sourceName) {
   currentSource = sourceName;
   currentDateFilter = 'today';
   renderSourcePage();
-  window.scrollTo(0, 0);
 }
 
-// ============ 主页渲染 ============
-function renderCategories() {
-  const counts = {};
-  allArticles.forEach(a => {
-    const c = a.category || '综合';
-    counts[c] = (counts[c] || 0) + 1;
-  });
-
-  // 固定顺序，让分类有条理
-  const order = ['科技', '技术', '财经', '社会', '热搜', '娱乐', '游戏', '阅读', '综合'];
-  const allCats = Object.keys(counts);
-  const cats = ['全部', ...order.filter(c => allCats.includes(c)),
-                ...allCats.filter(c => !order.includes(c)).sort()];
-
-  const box = document.getElementById('categories');
-  box.innerHTML = cats.map(c => {
-    const count = c === '全部' ? allArticles.length : counts[c];
-    const active = c === currentCategory ? 'active' : '';
-    return `<button class="cat-btn ${active}" onclick="switchCategory('${escapeAttr(c)}')">
-      ${escapeHtml(c)}<span class="count">${count}</span>
-    </button>`;
-  }).join('');
-}
-
-function switchCategory(cat) {
-  if (cat === currentCategory) return;
-  currentCategory = cat;
-  renderCategories();
-  renderList();
-}
-
-function renderList() {
-  const list = document.getElementById('articleList');
-  const filtered = currentCategory === '全部'
-    ? allArticles
-    : allArticles.filter(a => (a.category || '综合') === currentCategory);
-
-  if (filtered.length === 0) {
-    list.innerHTML = '<div class="empty">该分类暂无新闻</div>';
-    return;
-  }
-
-  list.innerHTML = filtered.map((a, idx) => {
-    const globalIdx = allArticles.indexOf(a);
-    return `
-      <div class="article-card" style="--i:${idx}" onclick="openModal(${globalIdx})">
-        <div class="article-title">${escapeHtml(a.title)}</div>
-        <div class="article-meta">
-          <a class="src-tag" href="#/source/${encodeURIComponent(a.source)}"
-             onclick="event.stopPropagation()">${escapeHtml(a.source)}</a>
-          <span class="cat-tag">${escapeHtml(a.category)}</span>
-          <span class="article-time">${escapeHtml(a.published || '')}</span>
-        </div>
-        ${a.summary ? `<div class="article-summary">${escapeHtml(a.summary)}</div>` : ''}
-      </div>
-    `;
-  }).join('');
-}
-
-// ============ 来源详情页渲染 ============
 function renderSourcePage() {
+  const app = document.getElementById('app');
   const sourceArticles = allArticles.filter(a => a.source === currentSource);
-
-  document.getElementById('sourceTitle').textContent = `📡 ${currentSource}`;
-  document.getElementById('sourceMeta').textContent =
-    `共 ${sourceArticles.length} 条新闻 · 点击卡片查看全文`;
-
-  // 日期筛选
-  const filters = [
-    { key: 'today', label: '今天' },
-    { key: '3d', label: '近 3 天' },
-    { key: '7d', label: '近 7 天' },
-    { key: 'all', label: '全部' },
-  ];
-  document.getElementById('dateFilters').innerHTML = filters.map(f =>
-    `<button class="date-btn ${f.key === currentDateFilter ? 'active' : ''}"
-             onclick="setDateFilter('${f.key}')">${f.label}</button>`
-  ).join('');
-
-  // 过滤
   const filtered = filterByDate(sourceArticles, currentDateFilter);
-  const list = document.getElementById('sourceList');
 
-  if (filtered.length === 0) {
-    list.innerHTML = `<div class="empty">该时间段内「${escapeHtml(currentSource)}」暂无新闻</div>`;
-    return;
-  }
-
-  list.innerHTML = filtered.map((a, idx) => {
-    const globalIdx = allArticles.indexOf(a);
-    return `
-      <div class="article-card" style="--i:${idx}" onclick="openModal(${globalIdx})">
-        <div class="article-title">${escapeHtml(a.title)}</div>
-        <div class="article-meta">
-          <span class="cat-tag">${escapeHtml(a.category)}</span>
-          <span class="article-time">${escapeHtml(a.published || '')}</span>
-        </div>
-        ${a.summary ? `<div class="article-summary">${escapeHtml(a.summary)}</div>` : ''}
-      </div>
-    `;
-  }).join('');
+  app.innerHTML = `
+    <a class="back-btn" href="#/">← 返回首页</a>
+    <div class="source-header">
+      <h1>📡 ${escapeHtml(currentSource)}</h1>
+      <div class="meta">共 ${sourceArticles.length} 条新闻 · 当前显示 ${filtered.length} 条</div>
+    </div>
+    <div class="date-filters">
+      ${[
+        { key: 'today', label: '今天' },
+        { key: '3d', label: '近 3 天' },
+        { key: '7d', label: '近 7 天' },
+        { key: 'all', label: '全部' },
+      ].map(f => `
+        <button class="date-btn ${f.key === currentDateFilter ? 'active' : ''}"
+                onclick="setDateFilter('${f.key}')">${f.label}</button>
+      `).join('')}
+    </div>
+    <div id="articleList">
+      ${filtered.length === 0
+        ? '<div class="empty">该时间段内暂无新闻</div>'
+        : renderArticles(filtered, false)}
+    </div>
+  `;
+  window.scrollTo(0, 0);
 }
 
 function setDateFilter(f) {
@@ -524,34 +445,177 @@ function setDateFilter(f) {
   renderSourcePage();
 }
 
+async function showArticle(id) {
+  const app = document.getElementById('app');
+  const art = allArticles.find(a => a.id === id);
+
+  if (!art) {
+    app.innerHTML = `
+      <a class="back-btn" href="#/">← 返回首页</a>
+      <div class="empty">未找到这篇文章</div>
+    `;
+    return;
+  }
+
+  // 立刻渲染详情页框架（用列表数据，秒开）
+  app.innerHTML = `
+    <a class="back-btn" href="#/">← 返回首页</a>
+    <article class="detail">
+      <h1>${escapeHtml(art.title)}</h1>
+      <div class="meta">
+        <a class="src-tag" href="#/source/${encodeURIComponent(art.source)}">${escapeHtml(art.source)}</a>
+        <span class="cat-tag">${escapeHtml(art.category)}</span>
+        <span class="article-time">${escapeHtml(art.published || '')}</span>
+      </div>
+      ${art.cover ? `<img class="detail-cover" src="${escapeHtml(art.cover)}" referrerpolicy="no-referrer" loading="eager" onerror="this.style.display='none'">` : ''}
+      <div class="detail-content" id="detailContent">
+        <div class="loading-text">正在加载正文...</div>
+      </div>
+      <a class="origin-link" href="${escapeHtml(art.link || '#')}" target="_blank" rel="noopener">🌐 查看原文</a>
+    </article>
+  `;
+  window.scrollTo(0, 0);
+
+  // 懒加载正文
+  const content = await getContent(id);
+  const el = document.getElementById('detailContent');
+  if (!el) return; // 用户已经切走了
+
+  if (!content || (!content.content && (!content.images || !content.images.length))) {
+    el.innerHTML = `<p>${escapeHtml(art.summary || '暂无正文')}</p>
+      <p style="color:#999;font-size:13px;margin-top:12px;">（正文抓取失败，请点击下方查看原文）</p>`;
+    return;
+  }
+
+  let html = '';
+  // 正文里的图片
+  if (content.images && content.images.length) {
+    html += content.images.slice(0, 3).map(u =>
+      `<img class="inline-img" src="${escapeHtml(u)}" referrerpolicy="no-referrer" loading="lazy" onerror="this.remove()">`
+    ).join('');
+  }
+  // 正文纯文本，段落化
+  if (content.content) {
+    const paras = content.content.split(/\n+/).filter(p => p.trim());
+    html += paras.map(p => `<p>${escapeHtml(p)}</p>`).join('');
+  } else {
+    html += `<p>${escapeHtml(art.summary || '暂无正文')}</p>`;
+  }
+
+  el.innerHTML = html;
+}
+
+// ============ 列表渲染 ============
+function computeCategories() {
+  const counts = {};
+  allArticles.forEach(a => {
+    const c = a.category || '综合';
+    counts[c] = (counts[c] || 0) + 1;
+  });
+  const order = ['科技', '技术', '财经', '社会', '热搜', '娱乐', '游戏', '阅读', '综合'];
+  const allCats = Object.keys(counts);
+  const sorted = order.filter(c => allCats.includes(c))
+    .concat(allCats.filter(c => !order.includes(c)).sort());
+  return [
+    { name: '全部', count: allArticles.length },
+    ...sorted.map(c => ({ name: c, count: counts[c] })),
+  ];
+}
+
+function switchCategory(cat) {
+  if (cat === currentCategory) return;
+  currentCategory = cat;
+  showHome();
+}
+
+function renderArticleList() {
+  const filtered = currentCategory === '全部'
+    ? allArticles
+    : allArticles.filter(a => (a.category || '综合') === currentCategory);
+  if (filtered.length === 0) {
+    return '<div class="empty">该分类暂无新闻</div>';
+  }
+  return renderArticles(filtered, true);
+}
+
+function renderArticles(list, showSourceTag) {
+  return list.map((a, idx) => `
+    <div class="article-card" style="--i:${idx}"
+         onclick="location.hash='#/article/${encodeURIComponent(a.id)}'">
+      ${a.cover
+        ? `<img class="article-thumb" src="${escapeHtml(a.cover)}" referrerpolicy="no-referrer" loading="lazy" onerror="this.style.display='none'">`
+        : ''}
+      <div class="article-body">
+        <div class="article-title">${escapeHtml(a.title)}</div>
+        <div class="article-meta">
+          ${showSourceTag
+            ? `<a class="src-tag" href="#/source/${encodeURIComponent(a.source)}"
+                 onclick="event.stopPropagation()">${escapeHtml(a.source)}</a>`
+            : ''}
+          <span class="cat-tag">${escapeHtml(a.category)}</span>
+          <span class="article-time">${escapeHtml(a.published || '')}</span>
+        </div>
+        ${a.summary ? `<div class="article-summary">${escapeHtml(a.summary)}</div>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+// ============ 正文懒加载 + 缓存 ============
+async function loadContents() {
+  if (contentsCache) return contentsCache;
+
+  // 从 localStorage 读缓存（6 小时内有效）
+  try {
+    const cached = localStorage.getItem('news_contents');
+    if (cached) {
+      const obj = JSON.parse(cached);
+      if (Date.now() - obj.ts < 6 * 3600 * 1000) {
+        contentsCache = obj.data;
+        return contentsCache;
+      }
+    }
+  } catch (e) {}
+
+  if (contentsPromise) return contentsPromise;
+
+  contentsPromise = fetch(`./data/contents.json?t=${Date.now()}`)
+    .then(r => r.json())
+    .then(data => {
+      contentsCache = data;
+      try {
+        localStorage.setItem('news_contents', JSON.stringify({ data, ts: Date.now() }));
+      } catch (e) { /* 超出配额就忽略 */ }
+      return data;
+    })
+    .finally(() => { contentsPromise = null; });
+
+  return contentsPromise;
+}
+
+async function getContent(id) {
+  try {
+    const contents = await loadContents();
+    return contents[id] || null;
+  } catch (e) {
+    return null;
+  }
+}
+
+// ============ 日期过滤 ============
 function filterByDate(articles, mode) {
   if (mode === 'all') return articles;
-
   const now = new Date();
-  const todayStr = formatDate(now);
-  const yestStr = formatDate(new Date(now.getTime() - 86400000));
-
   if (mode === 'today') {
+    const todayStr = formatDate(now);
     return articles.filter(a => (a.published || '').startsWith(todayStr));
   }
-
-  if (mode === '3d') {
-    const cutoff = new Date(now.getTime() - 3 * 86400000);
-    return articles.filter(a => {
-      const d = parseDate(a.published);
-      return d && d >= cutoff;
-    });
-  }
-
-  if (mode === '7d') {
-    const cutoff = new Date(now.getTime() - 7 * 86400000);
-    return articles.filter(a => {
-      const d = parseDate(a.published);
-      return d && d >= cutoff;
-    });
-  }
-
-  return articles;
+  const days = mode === '3d' ? 3 : 7;
+  const cutoff = new Date(now.getTime() - days * 86400000);
+  return articles.filter(a => {
+    const d = parseDate(a.published);
+    return d && d >= cutoff;
+  });
 }
 
 function formatDate(d) {
@@ -563,53 +627,10 @@ function formatDate(d) {
 
 function parseDate(str) {
   if (!str) return null;
-  // 支持 "YYYY-MM-DD HH:MM" 和 "YYYY-MM-DD"
   const m = str.match(/(\d{4})-(\d{2})-(\d{2})(?:\s+(\d{2}):(\d{2}))?/);
   if (!m) return null;
   return new Date(+m[1], +m[2] - 1, +m[3], +(m[4] || 0), +(m[5] || 0));
 }
-
-// ============ 详情弹层 ============
-function openModal(idx) {
-  const a = allArticles[idx];
-  if (!a) return;
-
-  document.getElementById('modalTitle').textContent = a.title;
-  document.getElementById('modalMeta').innerHTML =
-    `<a class="src-tag" href="#/source/${encodeURIComponent(a.source)}"
-        onclick="closeModal()">${escapeHtml(a.source)}</a>
-     <span class="cat-tag">${escapeHtml(a.category)}</span>
-     <span class="article-time">${escapeHtml(a.published || '')}</span>`;
-
-  const contentEl = document.getElementById('modalContent');
-  if (a.content && a.content.trim()) {
-    contentEl.textContent = a.content;
-  } else if (a.summary) {
-    contentEl.textContent = a.summary + '\n\n（正文抓取失败，请点击下方查看原文）';
-  } else {
-    contentEl.textContent = '（暂无正文，请点击下方查看原文）';
-  }
-
-  document.getElementById('modalOrigin').href = a.link || '#';
-
-  const mask = document.getElementById('modalMask');
-  mask.classList.add('open');
-  document.body.style.overflow = 'hidden';
-
-  const modal = mask.querySelector('.modal');
-  modal.style.animation = 'none';
-  modal.offsetHeight;
-  modal.style.animation = '';
-}
-
-function closeModal() {
-  document.getElementById('modalMask').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') closeModal();
-});
 
 // ============ 工具 ============
 function escapeHtml(str) {
@@ -622,8 +643,10 @@ function escapeAttr(str) {
   return String(str).replace(/'/g, "\\'").replace(/"/g, '&quot;');
 }
 
-// 启动
-loadNews(false);
+// ESC 键返回
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && location.hash) location.hash = '';
+});
 </script>
 </body>
 </html>
