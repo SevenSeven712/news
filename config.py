@@ -6,14 +6,11 @@ RSS_SOURCES = [
     {"name": "少数派", "url": "https://sspai.com/feed", "category": "科技", "max_items": 20},
     {"name": "爱范儿", "url": "https://www.ifanr.com/feed", "category": "科技", "max_items": 20},
     {"name": "IT之家", "url": "https://www.ithome.com/rss/", "category": "科技", "max_items": 20},
-    {"name": "Solidot", "url": "https://www.solidot.org/index.rss", "category": "科技", "max_items": 20},
     {"name": "虎嗅", "url": "https://www.huxiu.com/rss/0.xml", "category": "科技", "max_items": 20},
     {"name": "钛媒体", "url": "https://www.tmtpost.com/rss.xml", "category": "科技", "max_items": 20},
     {"name": "雷峰网", "url": "https://www.leiphone.com/feed", "category": "科技", "max_items": 20},
 
     # ========== 技术 ==========
-    {"name": "InfoQ 中文", "url": "https://www.infoq.cn/feed", "category": "技术", "max_items": 20},
-    {"name": "酷壳", "url": "https://www.coolshell.cn/feed", "category": "技术", "max_items": 15},
     {"name": "V2EX", "url": "https://www.v2ex.com/index.xml", "category": "技术", "max_items": 20},
     {"name": "开源中国", "url": "https://www.oschina.net/news/rss", "category": "技术", "max_items": 20},
     {"name": "掘金前端", "url": "https://rsshub.app/juejin/category/frontend", "category": "技术", "max_items": 20},
@@ -24,7 +21,6 @@ RSS_SOURCES = [
     {"name": "雪球热帖", "url": "https://rsshub.app/xueqiu/hots", "category": "财经", "max_items": 20},
 
     # ========== 社会 ==========
-    {"name": "联合早报", "url": "https://www.zaobao.com/realtime/china/rss.xml", "category": "社会", "max_items": 20},
     {"name": "中国新闻网", "url": "https://www.chinanews.com.cn/rss/scroll-news.xml", "category": "社会", "max_items": 20},
 
     # ========== 热搜 ==========
@@ -37,7 +33,6 @@ RSS_SOURCES = [
 
     # ========== 娱乐 ==========
     {"name": "豆瓣电影", "url": "https://rsshub.app/douban/movie/playing", "category": "娱乐", "max_items": 20},
-    {"name": "豆瓣小组", "url": "https://rsshub.app/douban/group/622552", "category": "娱乐", "max_items": 15},
 
     # ========== 游戏 ==========
     {"name": "机核 GCORES", "url": "https://www.gcores.com/rss", "category": "游戏", "max_items": 20},

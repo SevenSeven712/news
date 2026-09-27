@@ -16,7 +16,6 @@
   }
   .container { max-width: 900px; margin: 0 auto; }
 
-  /* ============ 顶部标语 ============ */
   .banner {
     background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
     color: #fff; padding: 16px 24px; border-radius: 12px;
@@ -27,7 +26,6 @@
   }
   .banner .emoji { font-size: 20px; flex-shrink: 0; }
 
-  /* ============ 头部 ============ */
   .header {
     display: flex; align-items: center; justify-content: space-between;
     margin-bottom: 16px; flex-wrap: wrap; gap: 12px;
@@ -53,7 +51,6 @@
   }
   .btn-refresh.loading .spinner { display: inline-block; }
 
-  /* ============ 分类栏 ============ */
   .categories {
     display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;
     padding-bottom: 16px; border-bottom: 1px solid #e5e7eb;
@@ -81,7 +78,6 @@
   }
   .cat-btn.active .count { background: rgba(255,255,255,.25); color: #fff; }
 
-  /* ============ 新闻卡片 ============ */
   .article-card {
     background: #fff; border-radius: 12px; padding: 16px 20px;
     margin-bottom: 12px;
@@ -166,7 +162,6 @@
 
   .empty { text-align: center; padding: 60px 0; color: #aaa; font-size: 14px; }
 
-  /* ============ 详情页 ============ */
   .back-btn {
     display: inline-flex; align-items: center; gap: 6px;
     padding: 8px 16px; margin-bottom: 20px;
@@ -225,7 +220,6 @@
     box-shadow: 0 6px 18px rgba(37, 99, 235, .35);
   }
 
-  /* ============ 来源页 ============ */
   .source-header {
     background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
     color: #fff; padding: 24px 28px; border-radius: 14px;
@@ -252,7 +246,6 @@
     box-shadow: 0 3px 10px rgba(37, 99, 235, .3);
   }
 
-  /* ============ 骨架屏 ============ */
   .skeleton {
     background: #fff; border-radius: 12px; padding: 18px 22px;
     margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.05);
@@ -305,18 +298,15 @@
 </div>
 
 <script>
-// ============ 全局状态 ============
 let allArticles = [];
 let meta = { last_updated: '', total_raw: 0, total_after_dedup: 0 };
 let currentCategory = '全部';
 let currentSource = '';
 let currentDateFilter = 'today';
 
-// 正文缓存（内存 + localStorage）
 let contentsCache = null;
 let contentsPromise = null;
 
-// ============ 启动 ============
 loadNews();
 
 async function loadNews(manual = false) {
@@ -329,7 +319,6 @@ async function loadNews(manual = false) {
   }
 
   try {
-    // 加时间戳防缓存
     const res = await fetch(`./data/news.json?t=${Date.now()}`);
     const data = await res.json();
     allArticles = data.articles || [];
@@ -338,7 +327,6 @@ async function loadNews(manual = false) {
       total_raw: data.total_raw,
       total_after_dedup: data.total_after_dedup,
     };
-    // 数据变了，清掉旧的正文缓存
     contentsCache = null;
     try { localStorage.removeItem('news_contents'); } catch (e) {}
   } catch (e) {
@@ -353,7 +341,6 @@ async function loadNews(manual = false) {
   }
 }
 
-// ============ 路由 ============
 function route() {
   const hash = decodeURIComponent(location.hash.slice(1));
   if (hash.startsWith('/article/')) {
@@ -367,10 +354,8 @@ function route() {
 
 window.addEventListener('hashchange', route);
 
-// ============ 视图渲染 ============
 function showHome() {
   const app = document.getElementById('app');
-
   const categories = computeCategories();
 
   app.innerHTML = `
@@ -457,7 +442,6 @@ async function showArticle(id) {
     return;
   }
 
-  // 立刻渲染详情页框架（用列表数据，秒开）
   app.innerHTML = `
     <a class="back-btn" href="#/">← 返回首页</a>
     <article class="detail">
@@ -476,10 +460,9 @@ async function showArticle(id) {
   `;
   window.scrollTo(0, 0);
 
-  // 懒加载正文
   const content = await getContent(id);
   const el = document.getElementById('detailContent');
-  if (!el) return; // 用户已经切走了
+  if (!el) return;
 
   if (!content || (!content.content && (!content.images || !content.images.length))) {
     el.innerHTML = `<p>${escapeHtml(art.summary || '暂无正文')}</p>
@@ -488,13 +471,11 @@ async function showArticle(id) {
   }
 
   let html = '';
-  // 正文里的图片
   if (content.images && content.images.length) {
     html += content.images.slice(0, 3).map(u =>
       `<img class="inline-img" src="${escapeHtml(u)}" referrerpolicy="no-referrer" loading="lazy" onerror="this.remove()">`
     ).join('');
   }
-  // 正文纯文本，段落化
   if (content.content) {
     const paras = content.content.split(/\n+/).filter(p => p.trim());
     html += paras.map(p => `<p>${escapeHtml(p)}</p>`).join('');
@@ -505,7 +486,6 @@ async function showArticle(id) {
   el.innerHTML = html;
 }
 
-// ============ 列表渲染 ============
 function computeCategories() {
   const counts = {};
   allArticles.forEach(a => {
@@ -561,11 +541,9 @@ function renderArticles(list, showSourceTag) {
   `).join('');
 }
 
-// ============ 正文懒加载 + 缓存 ============
 async function loadContents() {
   if (contentsCache) return contentsCache;
 
-  // 从 localStorage 读缓存（6 小时内有效）
   try {
     const cached = localStorage.getItem('news_contents');
     if (cached) {
@@ -585,7 +563,7 @@ async function loadContents() {
       contentsCache = data;
       try {
         localStorage.setItem('news_contents', JSON.stringify({ data, ts: Date.now() }));
-      } catch (e) { /* 超出配额就忽略 */ }
+      } catch (e) {}
       return data;
     })
     .finally(() => { contentsPromise = null; });
@@ -602,7 +580,6 @@ async function getContent(id) {
   }
 }
 
-// ============ 日期过滤 ============
 function filterByDate(articles, mode) {
   if (mode === 'all') return articles;
   const now = new Date();
@@ -632,7 +609,6 @@ function parseDate(str) {
   return new Date(+m[1], +m[2] - 1, +m[3], +(m[4] || 0), +(m[5] || 0));
 }
 
-// ============ 工具 ============
 function escapeHtml(str) {
   if (!str) return '';
   return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;')
@@ -643,7 +619,6 @@ function escapeAttr(str) {
   return String(str).replace(/'/g, "\\'").replace(/"/g, '&quot;');
 }
 
-// ESC 键返回
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && location.hash) location.hash = '';
 });

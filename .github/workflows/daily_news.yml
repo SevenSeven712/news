@@ -34,5 +34,5 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git add data/news.json data/contents.json
           git commit -m "🤖 自动更新新闻数据: $(date +'%Y-%m-%d')" || exit 0
-          git push
-          
+          git pull --rebase --autostash origin main || true
+          git push || true
