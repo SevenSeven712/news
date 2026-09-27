@@ -28,11 +28,20 @@ jobs:
       - name: 执行抓取脚本
         run: python scraper.py
 
-      - name: 提交并推送更新
+      - name: 备份数据
+        run: cp -r data /tmp/news-data
+
+      - name: 同步远程最新代码
+        run: |
+          git fetch origin main
+          git reset --hard origin/main
+
+      - name: 恢复数据并提交推送
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
+          rm -rf data
+          cp -r /tmp/news-data data
           git add -A data/
-          git commit -m "auto update news data: $(date +'%Y-%m-%d')" || exit 0
-          git pull --rebase --autostash origin main || true
-          git push || true         
+          git commit -m "auto update news data: $(date +'%Y-%m-%d')" || echo "no changes to commit"
+          git push origin main
