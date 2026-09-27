@@ -6,13 +6,10 @@
 <title>Seven 戚的每日新闻聚合</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   body {
     font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
     background: linear-gradient(180deg, #eef2f7 0%, #f5f6f8 200px, #f5f6f8 100%);
-    color: #1a1a2e;
-    padding: 24px 16px 60px;
-    min-height: 100vh;
+    color: #1a1a2e; padding: 24px 16px 60px; min-height: 100vh;
   }
   .container { max-width: 900px; margin: 0 auto; }
 
@@ -21,15 +18,15 @@
     color: #fff; padding: 16px 24px; border-radius: 12px;
     margin-bottom: 20px; font-size: 14px; line-height: 1.6;
     box-shadow: 0 4px 20px rgba(37, 99, 235, .25);
-    animation: fadeSlideDown .6s cubic-bezier(.22, 1, .36, 1) both;
     display: flex; align-items: center; gap: 12px;
+    animation: fadeSlideDown .6s cubic-bezier(.22,1,.36,1) both;
   }
   .banner .emoji { font-size: 20px; flex-shrink: 0; }
 
   .header {
     display: flex; align-items: center; justify-content: space-between;
     margin-bottom: 16px; flex-wrap: wrap; gap: 12px;
-    animation: fadeSlideDown .6s cubic-bezier(.22, 1, .36, 1) .05s both;
+    animation: fadeSlideDown .6s cubic-bezier(.22,1,.36,1) .05s both;
   }
   .header h1 { font-size: 24px; font-weight: 800; letter-spacing: -.3px; }
   .header .meta { font-size: 13px; color: #888; margin-top: 4px; }
@@ -42,7 +39,7 @@
     transition: transform .2s, box-shadow .2s, opacity .2s;
     display: inline-flex; align-items: center; gap: 6px;
   }
-  .btn-refresh:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(37, 99, 235, .35); }
+  .btn-refresh:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(37,99,235,.35); }
   .btn-refresh:disabled { opacity: .6; cursor: not-allowed; transform: none; }
   .btn-refresh .spinner {
     width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.4);
@@ -54,38 +51,37 @@
   .categories {
     display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;
     padding-bottom: 16px; border-bottom: 1px solid #e5e7eb;
-    animation: fadeSlideDown .6s cubic-bezier(.22, 1, .36, 1) .1s both;
+    animation: fadeSlideDown .6s cubic-bezier(.22,1,.36,1) .1s both;
+    min-height: 40px;
   }
   .cat-btn {
     padding: 7px 16px; border-radius: 20px; font-size: 13px;
     border: 1.5px solid #e5e7eb; background: #fff; color: #555;
-    cursor: pointer; transition: all .25s cubic-bezier(.22, 1, .36, 1);
+    cursor: pointer; transition: all .25s cubic-bezier(.22,1,.36,1);
     display: inline-flex; align-items: center; gap: 6px; font-weight: 500;
   }
   .cat-btn:hover {
-    border-color: #2563eb; color: #2563eb;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, .12);
+    border-color: #2563eb; color: #2563eb; transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37,99,235,.12);
   }
   .cat-btn.active {
     background: linear-gradient(135deg, #2563eb, #4f46e5);
     color: #fff; border-color: transparent;
-    box-shadow: 0 4px 14px rgba(37, 99, 235, .3);
+    box-shadow: 0 4px 14px rgba(37,99,235,.3);
   }
   .cat-btn .count {
     font-size: 11px; padding: 1px 7px; border-radius: 10px;
-    background: rgba(37, 99, 235, .1); color: #2563eb; font-weight: 600;
+    background: rgba(37,99,235,.1); color: #2563eb; font-weight: 600;
   }
   .cat-btn.active .count { background: rgba(255,255,255,.25); color: #fff; }
 
   .article-card {
     background: #fff; border-radius: 12px; padding: 16px 20px;
-    margin-bottom: 12px;
-    box-shadow: 0 1px 3px rgba(0,0,0,.05);
+    margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.05);
     cursor: pointer;
-    transition: transform .25s cubic-bezier(.22, 1, .36, 1),
-                box-shadow .25s cubic-bezier(.22, 1, .36, 1);
-    animation: cardEnter .5s cubic-bezier(.22, 1, .36, 1) both;
+    transition: transform .25s cubic-bezier(.22,1,.36,1),
+                box-shadow .25s cubic-bezier(.22,1,.36,1);
+    animation: cardEnter .5s cubic-bezier(.22,1,.36,1) both;
     animation-delay: calc(var(--i, 0) * 0.025s);
     position: relative; overflow: hidden;
     display: flex; gap: 16px; align-items: flex-start;
@@ -94,52 +90,39 @@
     content: ''; position: absolute; left: 0; top: 0; bottom: 0;
     width: 3px; background: linear-gradient(180deg, #2563eb, #7c3aed);
     transform: scaleY(0); transform-origin: top;
-    transition: transform .3s cubic-bezier(.22, 1, .36, 1);
+    transition: transform .3s cubic-bezier(.22,1,.36,1);
   }
-  .article-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 24px rgba(0,0,0,.08);
-  }
+  .article-card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(0,0,0,.08); }
   .article-card:hover::before { transform: scaleY(1); }
 
   .article-thumb {
     width: 100px; height: 72px; flex-shrink: 0;
-    border-radius: 8px; object-fit: cover;
-    background: #f0f1f3;
+    border-radius: 8px; object-fit: cover; background: #f0f1f3;
   }
-
   .article-body { flex: 1; min-width: 0; }
-
   .article-title {
     font-size: 15px; font-weight: 600; line-height: 1.55;
     color: #1a1a2e; transition: color .2s;
   }
   .article-card:hover .article-title { color: #2563eb; }
-
   .article-meta {
     display: flex; gap: 8px; margin-top: 10px;
     font-size: 12px; flex-wrap: wrap; align-items: center;
   }
-
   .src-tag {
     display: inline-flex; align-items: center; gap: 4px;
     padding: 3px 10px; border-radius: 6px;
     background: linear-gradient(135deg, #2563eb, #4f46e5);
     color: #fff; font-weight: 600; font-size: 12px;
-    box-shadow: 0 2px 6px rgba(37, 99, 235, .25);
-    cursor: pointer; transition: all .2s;
-    text-decoration: none;
+    box-shadow: 0 2px 6px rgba(37,99,235,.25);
+    cursor: pointer; transition: all .2s; text-decoration: none;
   }
-  .src-tag:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, .4);
-  }
+  .src-tag:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(37,99,235,.4); }
   .src-tag::before {
     content: ''; width: 5px; height: 5px; border-radius: 50%;
     background: #fff; display: inline-block;
     animation: pulse 2s ease-in-out infinite;
   }
-
   .cat-tag {
     display: inline-flex; align-items: center; gap: 4px;
     padding: 3px 10px; border-radius: 6px;
@@ -147,13 +130,11 @@
     border: 1px dashed #d1d5db; font-weight: 500; font-size: 12px;
   }
   .cat-tag::before { content: '🏷'; font-size: 11px; }
-
   .article-time {
     color: #9ca3af; font-size: 12px;
     display: inline-flex; align-items: center; gap: 4px;
   }
   .article-time::before { content: '🕐'; font-size: 11px; }
-
   .article-summary {
     font-size: 13px; color: #555; margin-top: 8px;
     line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2;
@@ -168,23 +149,19 @@
     background: #fff; border: 1.5px solid #e5e7eb;
     border-radius: 10px; color: #2563eb; text-decoration: none;
     font-size: 13px; font-weight: 600;
-    transition: all .25s cubic-bezier(.22, 1, .36, 1);
-    animation: fadeSlideDown .5s cubic-bezier(.22, 1, .36, 1) both;
+    transition: all .25s cubic-bezier(.22,1,.36,1);
   }
   .back-btn:hover {
     border-color: #2563eb; transform: translateX(-3px);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, .15);
+    box-shadow: 0 4px 12px rgba(37,99,235,.15);
   }
 
   .detail {
     background: #fff; border-radius: 16px; padding: 36px 44px;
     box-shadow: 0 4px 24px rgba(0,0,0,.06);
-    animation: fadeSlideDown .5s cubic-bezier(.22, 1, .36, 1) .05s both;
+    animation: fadeSlideDown .5s cubic-bezier(.22,1,.36,1) both;
   }
-  .detail h1 {
-    font-size: 26px; font-weight: 800; line-height: 1.4;
-    margin-bottom: 16px; letter-spacing: -.3px;
-  }
+  .detail h1 { font-size: 26px; font-weight: 800; line-height: 1.4; margin-bottom: 16px; }
   .detail .meta {
     display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
     font-size: 13px; color: #888; margin-bottom: 24px;
@@ -192,58 +169,45 @@
   }
   .detail-cover {
     width: 100%; max-height: 400px; object-fit: cover;
-    border-radius: 12px; margin-bottom: 24px;
-    background: #f0f1f3;
+    border-radius: 12px; margin-bottom: 24px; background: #f0f1f3;
   }
-  .detail-content {
-    font-size: 16px; line-height: 1.9; color: #333;
-    word-wrap: break-word;
-  }
+  .detail-content { font-size: 16px; line-height: 1.9; color: #333; word-wrap: break-word; }
   .detail-content p { margin-bottom: 16px; }
   .detail-content .inline-img {
-    width: 100%; border-radius: 10px; margin: 16px 0;
-    background: #f0f1f3;
+    width: 100%; border-radius: 10px; margin: 16px 0; background: #f0f1f3;
   }
-  .detail-content .loading-text {
-    color: #999; font-size: 14px; text-align: center; padding: 40px 0;
-  }
+  .detail-content .loading-text { color: #999; font-size: 14px; text-align: center; padding: 40px 0; }
   .origin-link {
     display: inline-block; margin-top: 28px; padding: 12px 22px;
     background: linear-gradient(135deg, #2563eb, #4f46e5);
     color: #fff; text-decoration: none;
     border-radius: 10px; font-size: 14px; font-weight: 600;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, .25);
+    box-shadow: 0 4px 12px rgba(37,99,235,.25);
     transition: transform .2s, box-shadow .2s;
   }
-  .origin-link:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(37, 99, 235, .35);
-  }
+  .origin-link:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(37,99,235,.35); }
 
   .source-header {
     background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
     color: #fff; padding: 24px 28px; border-radius: 14px;
     margin-bottom: 20px;
-    box-shadow: 0 6px 24px rgba(37, 99, 235, .3);
-    animation: fadeSlideDown .5s cubic-bezier(.22, 1, .36, 1) .05s both;
+    box-shadow: 0 6px 24px rgba(37,99,235,.3);
+    animation: fadeSlideDown .5s cubic-bezier(.22,1,.36,1) both;
   }
   .source-header h1 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
   .source-header .meta { font-size: 13px; opacity: .9; }
 
-  .date-filters {
-    display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap;
-    animation: fadeSlideDown .5s cubic-bezier(.22, 1, .36, 1) .1s both;
-  }
+  .date-filters { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
   .date-btn {
     padding: 6px 14px; border-radius: 18px; font-size: 12px;
     border: 1.5px solid #e5e7eb; background: #fff; color: #555;
     cursor: pointer; font-weight: 500;
-    transition: all .22s cubic-bezier(.22, 1, .36, 1);
+    transition: all .22s cubic-bezier(.22,1,.36,1);
   }
   .date-btn:hover { border-color: #2563eb; color: #2563eb; }
   .date-btn.active {
     background: #2563eb; color: #fff; border-color: #2563eb;
-    box-shadow: 0 3px 10px rgba(37, 99, 235, .3);
+    box-shadow: 0 3px 10px rgba(37,99,235,.3);
   }
 
   .skeleton {
@@ -253,8 +217,7 @@
   .sk-line {
     height: 12px; border-radius: 6px; margin-bottom: 10px;
     background: linear-gradient(90deg, #f0f1f3 25%, #e5e7eb 50%, #f0f1f3 75%);
-    background-size: 200% 100%;
-    animation: shimmer 1.4s infinite;
+    background-size: 200% 100%; animation: shimmer 1.4s infinite;
   }
   .sk-line.w40 { width: 40%; height: 20px; }
   .sk-line.w60 { width: 60%; }
@@ -268,10 +231,7 @@
     from { opacity: 0; transform: translateY(14px); }
     to { opacity: 1; transform: translateY(0); }
   }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: .35; }
-  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
   @keyframes spin { to { transform: rotate(360deg); } }
   @keyframes shimmer {
     0% { background-position: 200% 0; }
@@ -291,74 +251,10 @@
 </style>
 </head>
 <body>
-<div class="container" id="app">
-  <div class="skeleton"><div class="sk-line w40"></div><div class="sk-line w90"></div><div class="sk-line w60"></div></div>
-  <div class="skeleton"><div class="sk-line w40"></div><div class="sk-line w90"></div><div class="sk-line w60"></div></div>
-  <div class="skeleton"><div class="sk-line w40"></div><div class="sk-line w90"></div><div class="sk-line w60"></div></div>
-</div>
+<div class="container">
 
-<script>
-let allArticles = [];
-let meta = { last_updated: '', total_raw: 0, total_after_dedup: 0 };
-let currentCategory = '全部';
-let currentSource = '';
-let currentDateFilter = 'today';
-
-let contentsCache = null;
-let contentsPromise = null;
-
-loadNews();
-
-async function loadNews(manual = false) {
-  const btn = document.getElementById('btnRefresh');
-  const btnText = document.getElementById('btnText');
-  if (manual && btn) {
-    btn.disabled = true;
-    btn.classList.add('loading');
-    btnText.textContent = '刷新中...';
-  }
-
-  try {
-    const res = await fetch(`./data/news.json?t=${Date.now()}`);
-    const data = await res.json();
-    allArticles = data.articles || [];
-    meta = {
-      last_updated: data.last_updated,
-      total_raw: data.total_raw,
-      total_after_dedup: data.total_after_dedup,
-    };
-    contentsCache = null;
-    try { localStorage.removeItem('news_contents'); } catch (e) {}
-  } catch (e) {
-    allArticles = [];
-  } finally {
-    if (manual && btn) {
-      btn.disabled = false;
-      btn.classList.remove('loading');
-      btnText.textContent = '🔄 刷新';
-    }
-    route();
-  }
-}
-
-function route() {
-  const hash = decodeURIComponent(location.hash.slice(1));
-  if (hash.startsWith('/article/')) {
-    showArticle(hash.slice(9));
-  } else if (hash.startsWith('/source/')) {
-    showSource(hash.slice(8));
-  } else {
-    showHome();
-  }
-}
-
-window.addEventListener('hashchange', route);
-
-function showHome() {
-  const app = document.getElementById('app');
-  const categories = computeCategories();
-
-  app.innerHTML = `
+  <!-- ========== 主页（静态框架，永远是完整可见的） ========== -->
+  <div id="homePage">
     <div class="banner">
       <span class="emoji">🚀</span>
       <div>这是 <strong>Seven 戚</strong>的一个以 <strong>Python</strong> 为主的爬取项目，网站每日不间断更新热点新闻</div>
@@ -367,7 +263,7 @@ function showHome() {
     <div class="header">
       <div>
         <h1>📰 每日新闻聚合</h1>
-        <div class="meta">最后更新：${escapeHtml(meta.last_updated || '未知')} | 原始 ${meta.total_raw} 条，去重后 ${meta.total_after_dedup} 条</div>
+        <div class="meta" id="lastUpdated">正在加载...</div>
       </div>
       <button class="btn-refresh" id="btnRefresh" onclick="loadNews(true)">
         <span class="spinner"></span>
@@ -375,118 +271,92 @@ function showHome() {
       </button>
     </div>
 
-    <div class="categories">
-      ${categories.map(c => `
-        <button class="cat-btn ${c.name === currentCategory ? 'active' : ''}"
-                onclick="switchCategory('${escapeAttr(c.name)}')">
-          ${escapeHtml(c.name)}<span class="count">${c.count}</span>
-        </button>
-      `).join('')}
-    </div>
+    <div class="categories" id="categories"></div>
 
-    <div id="articleList">${renderArticleList()}</div>
-  `;
-}
-
-function showSource(sourceName) {
-  currentSource = sourceName;
-  currentDateFilter = 'today';
-  renderSourcePage();
-}
-
-function renderSourcePage() {
-  const app = document.getElementById('app');
-  const sourceArticles = allArticles.filter(a => a.source === currentSource);
-  const filtered = filterByDate(sourceArticles, currentDateFilter);
-
-  app.innerHTML = `
-    <a class="back-btn" href="#/">← 返回首页</a>
-    <div class="source-header">
-      <h1>📡 ${escapeHtml(currentSource)}</h1>
-      <div class="meta">共 ${sourceArticles.length} 条新闻 · 当前显示 ${filtered.length} 条</div>
-    </div>
-    <div class="date-filters">
-      ${[
-        { key: 'today', label: '今天' },
-        { key: '3d', label: '近 3 天' },
-        { key: '7d', label: '近 7 天' },
-        { key: 'all', label: '全部' },
-      ].map(f => `
-        <button class="date-btn ${f.key === currentDateFilter ? 'active' : ''}"
-                onclick="setDateFilter('${f.key}')">${f.label}</button>
-      `).join('')}
-    </div>
     <div id="articleList">
-      ${filtered.length === 0
-        ? '<div class="empty">该时间段内暂无新闻</div>'
-        : renderArticles(filtered, false)}
+      <div class="skeleton"><div class="sk-line w40"></div><div class="sk-line w90"></div><div class="sk-line w60"></div></div>
+      <div class="skeleton"><div class="sk-line w40"></div><div class="sk-line w90"></div><div class="sk-line w60"></div></div>
+      <div class="skeleton"><div class="sk-line w40"></div><div class="sk-line w90"></div><div class="sk-line w60"></div></div>
     </div>
-  `;
-  window.scrollTo(0, 0);
+  </div>
+
+  <!-- ========== 来源页（动态生成） ========== -->
+  <div id="sourcePage" style="display:none"></div>
+
+  <!-- ========== 详情页（动态生成） ========== -->
+  <div id="articlePage" style="display:none"></div>
+
+</div>
+
+<script>
+let allArticles = [];
+let meta = { last_updated: '', total_raw: 0, total_after_dedup: 0 };
+let currentCategory = '全部';
+let currentSource = '';
+let currentDateFilter = 'today';
+let contentsCache = null;
+let contentsPromise = null;
+
+// ===== 启动：立刻加载数据 =====
+loadNews();
+
+async function loadNews(manual = false) {
+  const btn = document.getElementById('btnRefresh');
+  const btnText = document.getElementById('btnText');
+  const listEl = document.getElementById('articleList');
+  const metaEl = document.getElementById('lastUpdated');
+
+  if (manual && btn) {
+    btn.disabled = true;
+    btn.classList.add('loading');
+    btnText.textContent = '刷新中...';
+  }
+
+  try {
+    const res = await fetch(`./data/news.json?t=${Date.now()}`);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    allArticles = data.articles || [];
+    meta = {
+      last_updated: data.last_updated || '',
+      total_raw: data.total_raw || 0,
+      total_after_dedup: data.total_after_dedup || 0,
+    };
+    contentsCache = null;
+    try { localStorage.removeItem('news_contents'); } catch (e) {}
+    fillHomeUI();
+  } catch (e) {
+    console.error('加载失败:', e);
+    if (listEl) listEl.innerHTML =
+      `<div class="empty">数据加载失败：${escapeHtml(String(e.message || e))}<br>
+       <small style="color:#bbb;font-size:12px;margin-top:8px;display:block;">
+       请稍后再试，或前往 GitHub Actions 手动触发一次抓取
+       </small></div>`;
+    if (metaEl) metaEl.textContent = '数据加载失败';
+  } finally {
+    if (manual && btn) {
+      btn.disabled = false;
+      btn.classList.remove('loading');
+      btnText.textContent = '🔄 刷新';
+    }
+  }
 }
 
-function setDateFilter(f) {
-  currentDateFilter = f;
-  renderSourcePage();
+// ===== 填充主页数据（HTML 框架已存在，只更新内容） =====
+function fillHomeUI() {
+  const metaEl = document.getElementById('lastUpdated');
+  if (metaEl) {
+    metaEl.textContent = meta.last_updated
+      ? `最后更新：${meta.last_updated} | 原始 ${meta.total_raw} 条，去重后 ${meta.total_after_dedup} 条`
+      : '暂无数据';
+  }
+  renderCategoriesUI();
+  renderArticleListUI();
 }
 
-async function showArticle(id) {
-  const app = document.getElementById('app');
-  const art = allArticles.find(a => a.id === id);
-
-  if (!art) {
-    app.innerHTML = `
-      <a class="back-btn" href="#/">← 返回首页</a>
-      <div class="empty">未找到这篇文章</div>
-    `;
-    return;
-  }
-
-  app.innerHTML = `
-    <a class="back-btn" href="#/">← 返回首页</a>
-    <article class="detail">
-      <h1>${escapeHtml(art.title)}</h1>
-      <div class="meta">
-        <a class="src-tag" href="#/source/${encodeURIComponent(art.source)}">${escapeHtml(art.source)}</a>
-        <span class="cat-tag">${escapeHtml(art.category)}</span>
-        <span class="article-time">${escapeHtml(art.published || '')}</span>
-      </div>
-      ${art.cover ? `<img class="detail-cover" src="${escapeHtml(art.cover)}" referrerpolicy="no-referrer" loading="eager" onerror="this.style.display='none'">` : ''}
-      <div class="detail-content" id="detailContent">
-        <div class="loading-text">正在加载正文...</div>
-      </div>
-      <a class="origin-link" href="${escapeHtml(art.link || '#')}" target="_blank" rel="noopener">🌐 查看原文</a>
-    </article>
-  `;
-  window.scrollTo(0, 0);
-
-  const content = await getContent(id);
-  const el = document.getElementById('detailContent');
-  if (!el) return;
-
-  if (!content || (!content.content && (!content.images || !content.images.length))) {
-    el.innerHTML = `<p>${escapeHtml(art.summary || '暂无正文')}</p>
-      <p style="color:#999;font-size:13px;margin-top:12px;">（正文抓取失败，请点击下方查看原文）</p>`;
-    return;
-  }
-
-  let html = '';
-  if (content.images && content.images.length) {
-    html += content.images.slice(0, 3).map(u =>
-      `<img class="inline-img" src="${escapeHtml(u)}" referrerpolicy="no-referrer" loading="lazy" onerror="this.remove()">`
-    ).join('');
-  }
-  if (content.content) {
-    const paras = content.content.split(/\n+/).filter(p => p.trim());
-    html += paras.map(p => `<p>${escapeHtml(p)}</p>`).join('');
-  } else {
-    html += `<p>${escapeHtml(art.summary || '暂无正文')}</p>`;
-  }
-
-  el.innerHTML = html;
-}
-
-function computeCategories() {
+function renderCategoriesUI() {
+  const box = document.getElementById('categories');
+  if (!box) return;
   const counts = {};
   allArticles.forEach(a => {
     const c = a.category || '综合';
@@ -496,26 +366,36 @@ function computeCategories() {
   const allCats = Object.keys(counts);
   const sorted = order.filter(c => allCats.includes(c))
     .concat(allCats.filter(c => !order.includes(c)).sort());
-  return [
+  const cats = [
     { name: '全部', count: allArticles.length },
     ...sorted.map(c => ({ name: c, count: counts[c] })),
   ];
+  box.innerHTML = cats.map(c => `
+    <button class="cat-btn ${c.name === currentCategory ? 'active' : ''}"
+            onclick="switchCategory('${escapeAttr(c.name)}')">
+      ${escapeHtml(c.name)}<span class="count">${c.count}</span>
+    </button>
+  `).join('');
 }
 
 function switchCategory(cat) {
   if (cat === currentCategory) return;
   currentCategory = cat;
-  showHome();
+  renderCategoriesUI();
+  renderArticleListUI();
 }
 
-function renderArticleList() {
+function renderArticleListUI() {
+  const list = document.getElementById('articleList');
+  if (!list) return;
   const filtered = currentCategory === '全部'
     ? allArticles
     : allArticles.filter(a => (a.category || '综合') === currentCategory);
   if (filtered.length === 0) {
-    return '<div class="empty">该分类暂无新闻</div>';
+    list.innerHTML = '<div class="empty">该分类暂无新闻</div>';
+    return;
   }
-  return renderArticles(filtered, true);
+  list.innerHTML = renderArticles(filtered, true);
 }
 
 function renderArticles(list, showSourceTag) {
@@ -541,9 +421,128 @@ function renderArticles(list, showSourceTag) {
   `).join('');
 }
 
+// ===== 路由 =====
+function route() {
+  const hash = decodeURIComponent(location.hash.slice(1));
+  const home = document.getElementById('homePage');
+  const sourcePage = document.getElementById('sourcePage');
+  const articlePage = document.getElementById('articlePage');
+
+  if (hash.startsWith('/article/')) {
+    home.style.display = 'none';
+    sourcePage.style.display = 'none';
+    articlePage.style.display = 'block';
+    showArticle(hash.slice(9));
+  } else if (hash.startsWith('/source/')) {
+    home.style.display = 'none';
+    sourcePage.style.display = 'block';
+    articlePage.style.display = 'none';
+    currentSource = hash.slice(8);
+    currentDateFilter = 'today';
+    renderSourcePage();
+  } else {
+    home.style.display = 'block';
+    sourcePage.style.display = 'none';
+    articlePage.style.display = 'none';
+  }
+  window.scrollTo(0, 0);
+}
+window.addEventListener('hashchange', route);
+
+// ===== 来源页 =====
+function renderSourcePage() {
+  const el = document.getElementById('sourcePage');
+  const sourceArticles = allArticles.filter(a => a.source === currentSource);
+  const filtered = filterByDate(sourceArticles, currentDateFilter);
+
+  el.innerHTML = `
+    <a class="back-btn" href="#/">← 返回首页</a>
+    <div class="source-header">
+      <h1>📡 ${escapeHtml(currentSource)}</h1>
+      <div class="meta">共 ${sourceArticles.length} 条新闻 · 当前显示 ${filtered.length} 条</div>
+    </div>
+    <div class="date-filters">
+      ${[
+        { key: 'today', label: '今天' },
+        { key: '3d', label: '近 3 天' },
+        { key: '7d', label: '近 7 天' },
+        { key: 'all', label: '全部' },
+      ].map(f => `
+        <button class="date-btn ${f.key === currentDateFilter ? 'active' : ''}"
+                onclick="setDateFilter('${f.key}')">${f.label}</button>
+      `).join('')}
+    </div>
+    <div>
+      ${filtered.length === 0
+        ? '<div class="empty">该时间段内暂无新闻</div>'
+        : renderArticles(filtered, false)}
+    </div>
+  `;
+}
+
+function setDateFilter(f) {
+  currentDateFilter = f;
+  renderSourcePage();
+}
+
+// ===== 详情页 =====
+async function showArticle(id) {
+  const el = document.getElementById('articlePage');
+  const art = allArticles.find(a => a.id === id);
+
+  if (!art) {
+    el.innerHTML = `
+      <a class="back-btn" href="#/">← 返回首页</a>
+      <div class="empty">未找到这篇文章</div>
+    `;
+    return;
+  }
+
+  el.innerHTML = `
+    <a class="back-btn" href="#/">← 返回首页</a>
+    <article class="detail">
+      <h1>${escapeHtml(art.title)}</h1>
+      <div class="meta">
+        <a class="src-tag" href="#/source/${encodeURIComponent(art.source)}">${escapeHtml(art.source)}</a>
+        <span class="cat-tag">${escapeHtml(art.category)}</span>
+        <span class="article-time">${escapeHtml(art.published || '')}</span>
+      </div>
+      ${art.cover ? `<img class="detail-cover" src="${escapeHtml(art.cover)}" referrerpolicy="no-referrer" loading="eager" onerror="this.style.display='none'">` : ''}
+      <div class="detail-content" id="detailContent">
+        <div class="loading-text">正在加载正文...</div>
+      </div>
+      <a class="origin-link" href="${escapeHtml(art.link || '#')}" target="_blank" rel="noopener">🌐 查看原文</a>
+    </article>
+  `;
+
+  const content = await getContent(id);
+  const c = document.getElementById('detailContent');
+  if (!c) return;
+
+  if (!content || (!content.content && (!content.images || !content.images.length))) {
+    c.innerHTML = `<p>${escapeHtml(art.summary || '暂无正文')}</p>
+      <p style="color:#999;font-size:13px;margin-top:12px;">（正文抓取失败，请点击下方查看原文）</p>`;
+    return;
+  }
+
+  let html = '';
+  if (content.images && content.images.length) {
+    html += content.images.slice(0, 3).map(u =>
+      `<img class="inline-img" src="${escapeHtml(u)}" referrerpolicy="no-referrer" loading="lazy" onerror="this.remove()">`
+    ).join('');
+  }
+  if (content.content) {
+    const paras = content.content.split(/\n+/).filter(p => p.trim());
+    html += paras.map(p => `<p>${escapeHtml(p)}</p>`).join('');
+  } else {
+    html += `<p>${escapeHtml(art.summary || '暂无正文')}</p>`;
+  }
+  c.innerHTML = html;
+}
+
+// ===== 正文懒加载 =====
 async function loadContents() {
   if (contentsCache) return contentsCache;
-
   try {
     const cached = localStorage.getItem('news_contents');
     if (cached) {
@@ -554,20 +553,15 @@ async function loadContents() {
       }
     }
   } catch (e) {}
-
   if (contentsPromise) return contentsPromise;
-
   contentsPromise = fetch(`./data/contents.json?t=${Date.now()}`)
     .then(r => r.json())
     .then(data => {
       contentsCache = data;
-      try {
-        localStorage.setItem('news_contents', JSON.stringify({ data, ts: Date.now() }));
-      } catch (e) {}
+      try { localStorage.setItem('news_contents', JSON.stringify({ data, ts: Date.now() })); } catch (e) {}
       return data;
     })
     .finally(() => { contentsPromise = null; });
-
   return contentsPromise;
 }
 
@@ -575,11 +569,10 @@ async function getContent(id) {
   try {
     const contents = await loadContents();
     return contents[id] || null;
-  } catch (e) {
-    return null;
-  }
+  } catch (e) { return null; }
 }
 
+// ===== 工具 =====
 function filterByDate(articles, mode) {
   if (mode === 'all') return articles;
   const now = new Date();
@@ -594,21 +587,18 @@ function filterByDate(articles, mode) {
     return d && d >= cutoff;
   });
 }
-
 function formatDate(d) {
   const y = d.getFullYear();
   const m = String(d.getMonth() + 1).padStart(2, '0');
   const day = String(d.getDate()).padStart(2, '0');
   return `${y}-${m}-${day}`;
 }
-
 function parseDate(str) {
   if (!str) return null;
   const m = str.match(/(\d{4})-(\d{2})-(\d{2})(?:\s+(\d{2}):(\d{2}))?/);
   if (!m) return null;
   return new Date(+m[1], +m[2] - 1, +m[3], +(m[4] || 0), +(m[5] || 0));
 }
-
 function escapeHtml(str) {
   if (!str) return '';
   return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;')
@@ -619,6 +609,10 @@ function escapeAttr(str) {
   return String(str).replace(/'/g, "\\'").replace(/"/g, '&quot;');
 }
 
+// 首次进入就渲染路由
+route();
+
+// ESC 返回首页
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && location.hash) location.hash = '';
 });
