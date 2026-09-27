@@ -13,27 +13,41 @@
   .container { max-width: 900px; margin: 0 auto; }
   .header {
     display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 20px; flex-wrap: wrap; gap: 12px;
+    margin-bottom: 16px; flex-wrap: wrap; gap: 12px;
   }
   .header h1 { font-size: 22px; font-weight: 700; }
-  .header .meta { font-size: 13px; color: #888; }
+  .header .meta { font-size: 13px; color: #888; margin-top: 4px; }
   .btn-refresh {
-    display: inline-flex; align-items: center; gap: 6px;
     padding: 10px 20px; border: none; border-radius: 8px;
     background: #2563eb; color: #fff; font-size: 14px;
     font-weight: 600; cursor: pointer;
   }
   .btn-refresh:hover { background: #1d4ed8; }
   .btn-refresh:disabled { background: #93b4f5; cursor: not-allowed; }
+
+  /* 分类栏 */
+  .categories {
+    display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap;
+    padding-bottom: 12px; border-bottom: 1px solid #e5e7eb;
+  }
+  .cat-btn {
+    padding: 6px 14px; border-radius: 20px; font-size: 13px;
+    border: 1px solid #e5e7eb; background: #fff; color: #555;
+    cursor: pointer; transition: all .2s;
+  }
+  .cat-btn:hover { border-color: #2563eb; color: #2563eb; }
+  .cat-btn.active { background: #2563eb; color: #fff; border-color: #2563eb; }
+  .cat-btn .count { opacity: .7; font-size: 12px; margin-left: 4px; }
+
   .article-card {
     background: #fff; border-radius: 10px; padding: 16px 20px;
     margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    cursor: pointer; transition: box-shadow .2s;
   }
+  .article-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,.12); }
   .article-title {
-    font-size: 15px; font-weight: 600; line-height: 1.5;
-    color: #1a1a2e; text-decoration: none; display: block;
+    font-size: 15px; font-weight: 600; line-height: 1.5; color: #1a1a2e;
   }
-  .article-title:hover { color: #2563eb; }
   .article-meta {
     display: flex; gap: 12px; margin-top: 8px;
     font-size: 12px; color: #888; flex-wrap: wrap;
@@ -47,12 +61,45 @@
     -webkit-box-orient: vertical; overflow: hidden;
   }
   .empty { text-align: center; padding: 60px 0; color: #aaa; font-size: 14px; }
-  .toast {
-    position: fixed; top: 20px; right: 20px; padding: 10px 18px;
-    border-radius: 8px; font-size: 13px; color: #fff;
-    background: #16a34a; opacity: 0; transition: opacity .3s; z-index: 999;
+
+  /* 详情弹层 */
+  .modal-mask {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,.5); z-index: 100;
+    padding: 24px; overflow-y: auto;
   }
-  .toast.show { opacity: 1; }
+  .modal-mask.open { display: block; }
+  .modal {
+    max-width: 720px; margin: 0 auto; background: #fff;
+    border-radius: 12px; padding: 32px 40px;
+    box-shadow: 0 10px 40px rgba(0,0,0,.2);
+  }
+  .modal h2 {
+    font-size: 22px; font-weight: 700; line-height: 1.4;
+    margin-bottom: 12px;
+  }
+  .modal .meta {
+    font-size: 13px; color: #888; margin-bottom: 20px;
+    padding-bottom: 16px; border-bottom: 1px solid #eee;
+    display: flex; gap: 12px; flex-wrap: wrap;
+  }
+  .modal .content {
+    font-size: 15px; line-height: 1.85; color: #333;
+    white-space: pre-wrap; word-wrap: break-word;
+  }
+  .modal .origin-link {
+    display: inline-block; margin-top: 24px; padding: 10px 18px;
+    background: #f0f1f3; color: #2563eb; text-decoration: none;
+    border-radius: 8px; font-size: 13px;
+  }
+  .modal .origin-link:hover { background: #e0e3e8; }
+  .modal .close {
+    position: sticky; top: 0; float: right;
+    background: #f0f1f3; border: none; width: 32px; height: 32px;
+    border-radius: 50%; font-size: 18px; cursor: pointer; color: #555;
+    margin: -16px -16px 0 0;
+  }
+  .modal .close:hover { background: #e0e3e8; }
 </style>
 </head>
 <body>
@@ -64,58 +111,140 @@
     </div>
     <button class="btn-refresh" id="btnRefresh" onclick="loadNews(true)">🔄 刷新</button>
   </div>
+
+  <div class="categories" id="categories"></div>
   <div id="articleList"><div class="empty">正在加载新闻...</div></div>
 </div>
-<div class="toast" id="toast">已拉取最新数据</div>
+
+<!-- 详情弹层 -->
+<div class="modal-mask" id="modalMask" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <button class="close" onclick="closeModal()">✕</button>
+    <h2 id="modalTitle"></h2>
+    <div class="meta" id="modalMeta"></div>
+    <div class="content" id="modalContent"></div>
+    <a id="modalOrigin" class="origin-link" target="_blank" rel="noopener">🌐 查看原文</a>
+  </div>
+</div>
 
 <script>
+let allArticles = [];
+let currentCategory = '全部';
+
 async function loadNews(manual = false) {
   const btn = document.getElementById('btnRefresh');
   const list = document.getElementById('articleList');
   if (manual) { btn.disabled = true; btn.textContent = '刷新中...'; }
+
   try {
     const res = await fetch(`./data/news.json?t=${Date.now()}`);
     const data = await res.json();
-    render(data);
-    if (manual) showToast();
+    allArticles = data.articles || [];
+    document.getElementById('lastUpdated').textContent =
+      `最后更新：${data.last_updated} | 原始 ${data.total_raw} 条，去重后 ${data.total_after_dedup} 条`;
+    renderCategories();
+    renderList();
   } catch (e) {
-    list.innerHTML = '<div class="empty">暂无数据，请等待 Actions 生成或手动触发</div>';
+    list.innerHTML = '<div class="empty">暂无数据，请等待 Actions 生成</div>';
   } finally {
     if (manual) { btn.disabled = false; btn.textContent = '🔄 刷新'; }
   }
 }
 
-function render(data) {
-  document.getElementById('lastUpdated').textContent =
-    `最后更新：${data.last_updated} | 原始 ${data.total_raw} 条，去重后 ${data.total_after_dedup} 条`;
+function renderCategories() {
+  const counts = {};
+  allArticles.forEach(a => {
+    const c = a.category || '综合';
+    counts[c] = (counts[c] || 0) + 1;
+  });
+  const cats = ['全部', ...Object.keys(counts).sort()];
+  const box = document.getElementById('categories');
+  box.innerHTML = cats.map(c => {
+    const count = c === '全部' ? allArticles.length : counts[c];
+    const active = c === currentCategory ? 'active' : '';
+    return `<button class="cat-btn ${active}" onclick="switchCategory('${escapeAttr(c)}')">
+      ${escapeHtml(c)}<span class="count">${count}</span>
+    </button>`;
+  }).join('');
+}
+
+function switchCategory(cat) {
+  currentCategory = cat;
+  renderCategories();
+  renderList();
+}
+
+function renderList() {
   const list = document.getElementById('articleList');
-  if (!data.articles || data.articles.length === 0) {
-    list.innerHTML = '<div class="empty">暂无新闻</div>';
+  const filtered = currentCategory === '全部'
+    ? allArticles
+    : allArticles.filter(a => (a.category || '综合') === currentCategory);
+
+  if (filtered.length === 0) {
+    list.innerHTML = '<div class="empty">该分类暂无新闻</div>';
     return;
   }
-  list.innerHTML = data.articles.map(a => `
-    <div class="article-card">
-      <a class="article-title" href="${escapeHtml(a.link)}" target="_blank" rel="noopener">${escapeHtml(a.title)}</a>
-      <div class="article-meta">
-        <span class="tag">${escapeHtml(a.source)}</span>
-        <span>${escapeHtml(a.category)}</span>
-        <span>${escapeHtml(a.published || '')}</span>
+
+  list.innerHTML = filtered.map((a, idx) => {
+    const globalIdx = allArticles.indexOf(a);
+    return `
+      <div class="article-card" onclick="openModal(${globalIdx})">
+        <div class="article-title">${escapeHtml(a.title)}</div>
+        <div class="article-meta">
+          <span class="tag">${escapeHtml(a.source)}</span>
+          <span>${escapeHtml(a.category)}</span>
+          <span>${escapeHtml(a.published || '')}</span>
+        </div>
+        ${a.summary ? `<div class="article-summary">${escapeHtml(a.summary)}</div>` : ''}
       </div>
-      ${a.summary ? `<div class="article-summary">${escapeHtml(a.summary)}</div>` : ''}
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
+
+function openModal(idx) {
+  const a = allArticles[idx];
+  if (!a) return;
+
+  document.getElementById('modalTitle').textContent = a.title;
+  document.getElementById('modalMeta').innerHTML =
+    `<span class="tag" style="background:#f0f1f3;padding:2px 8px;border-radius:4px;">${escapeHtml(a.source)}</span>
+     <span>${escapeHtml(a.category)}</span>
+     <span>${escapeHtml(a.published || '')}</span>`;
+
+  const contentEl = document.getElementById('modalContent');
+  if (a.content && a.content.trim()) {
+    contentEl.textContent = a.content;
+  } else if (a.summary) {
+    contentEl.textContent = a.summary + '\n\n（正文抓取失败，请点击下方查看原文）';
+  } else {
+    contentEl.textContent = '（暂无正文，请点击下方查看原文）';
+  }
+
+  const origin = document.getElementById('modalOrigin');
+  origin.href = a.link || '#';
+
+  document.getElementById('modalMask').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modalMask').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ESC 关闭
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
 
 function escapeHtml(str) {
   if (!str) return '';
-  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
-
-function showToast() {
-  const t = document.getElementById('toast');
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2000);
+function escapeAttr(str) {
+  if (!str) return '';
+  return String(str).replace(/'/g, "\\'").replace(/"/g, '&quot;');
 }
 
 loadNews(false);
