@@ -1,24 +1,24 @@
-name: Daily News Fetch
+名称: 每日新闻抓取
 
-on:
+触发条件:
   schedule:
     - cron: '0 0 * * *'
   workflow_dispatch:
 
-jobs:
+任务:
   fetch-news:
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
       - name: 检出仓库代码
-        uses: actions/checkout@v4
+        使用: actions/checkout@v4
 
       - name: 设置 Python 环境
-        uses: actions/setup-python@v5
+        使用: actions/setup-python@v5
         with:
-          python-version: '3.11'
-          cache: 'pip'
+          Python 版本: '3.11'
+          缓存: 'pip'
 
       - name: 安装依赖
         run: |
